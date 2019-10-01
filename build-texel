@@ -2,6 +2,9 @@
 
 import os, sys, glob, time
 
+try: os.mkdir("lib")
+except FileExistsError: pass
+
 os.chdir("./src")
 files = glob.glob("*.cpp")
 for i in range(len(files)):
