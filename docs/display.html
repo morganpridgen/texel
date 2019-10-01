@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <title>
+      Texel Documentation - Display
+    </title>
+  </head>
+  <body>
+    <h2>Texel Documentation - Display</h2><br />
+    
+    <h3>Constants</h3>
+    <p id="TXL_IntRes">
+      <h3><code>TXL_IntResX = 640.0f, TXL_IntResY = 360.0f</code></h3>
+      
+      The size of the display in screen coordinates. Rendering functions will handle upscaling to higher resolutions.<br />
+    </p>
+    
+    <h3>Class</h3>
+    <p id="TXL_Display">
+      <h3><code>TXL_Display</code></h3>
+      
+      Class representing a display window.<br />
+      
+      <p id="TXL_Display::init">
+        <h3><code>bool TXL_Display::init(const char name[])</code></h3>
+        
+        Sets up the display window. The window title will include <code>name</code>.<br />
+        Returns 1 on success, 0 otherwise.<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Display display;
+if (!display.init("Example Window")) return 0;
+        </code>
+      </p>
+      
+      <p id="TXL_Display::end">
+        <h3><code>void TXL_Display::end()</code></h3>
+        
+        Closes the display window.
+        
+        <code style="white-space: pre-wrap">
+TXL_Display display;
+if (!display.init("Example Window")) return 0;
+// other code
+display.end();
+        </code>
+      </p>
+      
+      <p id="TXL_Display::refresh">
+        <h3><code>void TXL_Display::refresh()</code></h3>
+        
+        All rendering function calls don't actually modify the screen, they affect a buffer. This function copies the buffer to the screen to make everything visible.<br />
+        In addition, the buffer will be filled with the color specified by the previous call to <code>TXL_Display::setFill</code>.<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Display display;
+// other code
+TXL_RenderQuad({160, 90, 320, 180}, {1, 1, 1, 1});
+display.refresh();
+        </code>
+      </p>
+      
+      <p id="TXL_Display::refresh">
+        <h3><code>void TXL_Display::setFill(float r, float g, float b)</code></h3>
+        
+        Sets the color the screen is filled with when <code>TXL_Display::refresh</code> is called.<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Display display;
+display.setFill(1, 1, 1);
+// other code
+display.refresh();
+        </code>
+      </p>
+    </p>
+    
+    <a href="index.html">Go back</a><br />
+  </body>
+</html>

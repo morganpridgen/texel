@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+  <head>
+    <title>
+      Texel Documentation - Controllers
+    </title>
+  </head>
+  <body>
+    <h2>Texel Documentation - Controllers</h2><br />
+    
+    <h3>Enumeration</h3>
+    <p id="TXL_CtrlButton">
+      <h3><code>TXL_CtrlButton</code></h3>
+      
+      <code>CtrlN</code><br />
+      <code>CtrlS</code><br />
+      <code>CtrlE</code><br />
+      <code>CtrlW</code><br />
+      <code>CtrlStart</code><br />
+      <code>CtrlSelect</code><br />
+      <code>CtrlL</code><br />
+      <code>CtrlR</code><br />
+      <code>CtrlA</code><br />
+      <code>CtrlB</code><br />
+      <code>CtrlX</code><br />
+      <code>CtrlY</code><br />
+      
+      Enumeration representing buttons on a controller.<br />
+      <code>CtrlN</code>, <code>CtrlS</code>, <code>CtrlE</code>, and <code>CtrlW</code> represent the face buttons on a controller, named by their position.<br />
+      <img src="ctrl-buttonlayout.gif" width=128 height=128 /><br />
+      <code>CtrlA</code>, <code>CtrlB</code>, <code>CtrlX</code>, <code>CtrlY</code> will attempt to match the buttons that have similar labels.<br />
+      
+      <h4>Keyboard Mappings</h4>
+      <code>CtrlN</code> and <code>CtrlY</code>: K<br />
+      <code>CtrlS</code> and <code>CtrlA</code>: Space<br />
+      <code>CtrlE</code> and <code>CtrlB</code>: L<br />
+      <code>CtrlW</code> and <code>CtrlX</code>: Left Shift<br />
+      <code>CtrlStart</code>: Return/Enter<br />
+      <code>CtrlSelect</code>: Tab<br />
+      <code>CtrlL</code>: J<br />
+      <code>CtrlR</code> Semicolon<br />
+    </p>
+    
+    <h3>Classes</h3>
+    <p id="TXL_Controller">
+      <h3><code>TXL_Controller, TXL_Keyboard</code></h3>
+      
+      Class representing a controller. <code>TXL_Controller</code> takes input from a game controller, while <code>TXL_Keyboard</code> takes input from a keyboard.<br />
+      
+      <p id="TXL_Controller::init">
+        <h3><code>bool TXL_Controller::init()</code></h3>
+        
+        Checks for available controllers to assign to this object.<br />
+        Returns 0 if a usable controller was found, 0 otherwise.<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Controller *ctrl = new TXL_Controller;
+if (!ctrl->init()) return 0;
+        </code>
+      </p>
+      
+      <p id="TXL_Controller::end">
+        <h3><code>void TXL_Controller::end()</code></h3>
+        
+        Closes the controller being used.<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Controller *ctrl;
+// other code
+ctrl->end();
+        </code>
+      </p>
+      
+      <p id="TXL_Controller::isKeyboard">
+        <h3><code>bool TXL_Controller::isKeyboard()</code></h3>
+        
+        Returns 0 for <code>TXL_Controller</code> objects, or 1 for <code>TXL_Keyboard</code>.<br />
+      </p>
+      
+      <p id="TXL_Controller::buttonPress">
+        <h3><code>bool TXL_Controller::buttonPress(TXL_CtrlButton button)</code></h3>
+        
+        Returns 1 if <code>button</code> was pressed, 0 otherwise.
+        
+        <code style="white-space: pre-wrap">
+TXL_Display display;
+TXL_Controller *ctrl;
+// other code
+if (ctrl->buttonPress(CtrlA)) display.setFill(1, 1, 1);
+else display.setFill(0, 0, 0);
+        </code>
+      </p>
+      
+      <p id="TXL_Controller::buttonClick">
+        <h3><code>bool TXL_Controller::buttonClick(TXL_CtrlButton button)</code></h3>
+        
+        Returns 1 if <code>button</code> just went from not being pressed to being pressed, 0 otherwise.<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Controller *ctrl;
+// other code
+if (ctrl->buttonClick(CtrlA)) ctrl->rumble(1.0f, 250);
+        </code>
+      </p>
+      
+      <p id="TXL_Controller::joys">
+        <h3><code>int TXL_Controller::leftJoyX(), int TXL_Controller::leftJoyY(), int TXL_Controller::rightJoyX(), int TXL_Controller::rightJoyY()</code></h3>
+        
+        Returns a joystick axis. The D-Pad will take priority over the left joystick. In the case of <code>TXL_Keyboard</code>, the WASD keys control the left joystick, while the right joystick can't be moved.<br />
+        Joystick axes are constrained to the range (-128, 128).<br />
+        
+        <code style="white-space: pre-wrap">
+int x, y;
+TXL_Texture texture
+TXL_Controller *ctrl;
+// other code
+x += ctrl->leftJoyX();
+y += ctrl->leftJoyY();
+texture.render(x, y, atan2(ctrl->rightJoyY(), ctrl->rightJoyX()));
+        </code>
+      </p>
+      
+      <p id="TXL_Controller::getId">
+        <h3><code>int TXL_Controller::getId()</code></h3>
+        
+        Get the ID of the controller. This number represents the order it was plugged in to the computer.<br />
+      </p>
+      
+      <p id="TXL_Controller::rumble">
+        <h3><code>void TXL_Controller::rumble(float power, int time)</code></h3>
+        
+        Makes the controller vibrate if possible. Power is a number between 0 and 1, and time is the length of the rumble in milliseconds<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Controller *ctrl;
+// other code
+ctrl->rumble(float(ctrl->leftJoyY() + 128) / 256.0f, 17);
+        </code>
+      </p>
+    </p>
+    
+    <a href="index.html">Go back</a><br />
+  </body>
+</html>

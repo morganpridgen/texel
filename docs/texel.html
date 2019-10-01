@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <title>
+      Texel Documentation - Basics
+    </title>
+  </head>
+  <body>
+    <h2>Texel Documentation - TEXEL</h2><br />
+    
+    <p id="TXL_Init">
+      <h3><code>bool TXL_Init()</code></h3>
+      
+      Sets up modules Texel relies on. Returns 1 on success, 0 on failure. <br />
+      
+      <code style="white-space: pre-wrap">
+int main() {
+  if (!TXL_Init()) return 1;
+  // other code
+}
+      </code>
+    </p>
+    
+    <p id="TXL_Events">
+      <h3><code>bool TXL_Events(TXL_Display*)</code></h3>
+      
+      Handles display events. Argument is your display. Returns 0 when a shutdown signal has been sent to the application, 1 otherwise. <br />
+      
+      <code style="white-space: pre-wrap">
+TXL_Display display;
+// other code
+while (loop) {
+  if (!TXL_Events(&display)) loop = 0;
+  // other code
+}
+      </code>
+    </p>
+    
+    <p id="TXL_End">
+      <h3><code>void TXL_End()</code></h3>
+      
+      Shuts down all modules Texel relies on.<br />
+      
+      <code style="white-space: pre-wrap">
+int main() {
+  // other code
+  TXL_End();
+}
+      </code>
+    </p>
+    
+    <a href="index.html">Go back</a><br />
+  </body>
+</html>

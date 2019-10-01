@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+  <head>
+    <title>
+      Texel Documentation - Textures
+    </title>
+  </head>
+  <body>
+    <h2>Texel Documentation - Textures</h2><br />
+    
+    <h3>Class</h3>
+    <p id="TXL_Texture">
+      <h3><code>TXL_Texture</code></h3>
+      
+      Class for texture rendering.<br />
+      
+      <p id="TXL_Texture::loaded">
+        <h3><code>bool TXL_Texture::loaded()</code></h3>
+        
+        Returns 1 if the texture is loaded, 0 otherwise.<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Texture tex;
+int x, y;
+// other code
+if (tex.loaded()) tex.render(x, y);
+else TXL_RenderQuad({x, y, 16, 16}, {1, 1, 1, 1});
+        </code>
+      </p>
+      
+      <p id="TXL_Texture::load">
+        <h3><code>bool TXL_Texture::load(const char path[], int w, int h), bool TXL_Texture::load(const char path[])</code></h3>
+        
+        Loads <code>path</code>. If both <code>w</code> and <code>h</code> are not -1, then all rendering functions will assume the image's resolution is <code>w*h</code>. If either is -1, then the image's actual resolution is used instead.<br />
+        Returns 1 on success, 0 otherwise.<br />
+        If only <code>path</code> is given, <code>w</code> and <code>h</code> are assumed to be -1.
+        
+        <code style="white-space: pre-wrap">
+TXL_Texture tex;
+if (!tex.load(TXL_DataPath("player.png"), 16, 16)) return 0;
+        </code>
+      </p>
+      
+      <p id="TXL_Texture::free">
+        <h3><code>void TXL_Texture::free()</code></h3>
+        
+        Deletes the texture.
+        
+        <code style="white-space: pre-wrap">
+TXL_Texture tex;
+// other code
+tex.free();
+        </code>
+      </p>
+      
+      <p id="TXL_Texture::render">
+        <h3><code>void TXL_Texture::render(float x, float y, float sX, float sY, float r), void TXL_Texture::render(float x, float y, float sX, float sY), void TXL_Texture::render(float x, float y, float r), void TXL_Texture::render(float x, float y)</code></h3>
+        
+        Draws the texture centered at <code>(x, y)</code>. The texture's width is multiplied by <code>sX</code>, and the height by <code>sY</code>. The texture will be rotated by <code>r</code> radians.<br />
+        If <code>sX</code> and <code>sY</code> are not given, they are assumed to be 1. <code>r</code> will be 0 if not given.
+        
+        <code style="white-space: pre-wrap">
+TXL_Texture tex;
+// other code
+tex.render(128, 128, 2, 2, 3.14 / 6.0f);
+        </code>
+      </p>
+      
+      <p id="TXL_Texture::setClip">
+        <h3><code>void TXL_Texture::setClip(float cL, float cR, float cT, float cB)</code></h3>
+        
+        Set the portion of the texture that gets rendered. <code>cL</code> and <code>cR</code> are the left and right edges of the portion of the texture to be rendered, while <code>cT</code> and <code>cB</code> are the top and bottom.<br />
+        This also changes the size of the rendered texture.<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Texture tex;
+if (!tex.load(TXL_DataPath("player.png"), 32, 16)) return 0;
+// other code
+tex.setClip(0, 16, 0, 16);
+tex.render(128, 128);
+        </code>
+      </p>
+      
+      <p id="TXL_Texture::setColorMod">
+        <h3><code>void TXL_Texture::setColorMod(float r, float g, float b, float a), void TXL_Texture::setColorMod(float r, float g, float b), void TXL_Texture::setColorMod(float a)</code></h3>
+        
+        Sets the color modulation for the texture.<br />
+        Every color value for every pixel will be multiplied by the value given here.<br />
+        If the RGB only or the alpha only versions are used, the other color channels remain unchanged.<br />
+        
+        <code style="white-space: pre-wrap">
+TXL_Texture tex;
+if (!tex.load(TXL_DataPath("player.png"), 16, 16)) return 0;
+// other code
+tex.setColorMod(0, 1, 0, 0.5f);
+tex.render(128, 128);
+        </code>
+      </p>
+    </p>
+    
+    <a href="index.html">Go back</a><br />
+  </body>
+</html>

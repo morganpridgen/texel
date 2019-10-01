@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <title>
+      Texel Documentation - Basic Drawing
+    </title>
+  </head>
+  <body>
+    <h2>Texel Documentation - Basic Drawing</h2><br />
+    
+    <h3>Structures</h3>
+    <p id="TXL_Vert">
+      <h3><code>TXL_Vert</code></h3>
+      <code>float x</code><br />
+      <code>float y</code><br />
+      
+      Structure representing a point on the screen.<br />
+      
+      <code style="white-space: pre-wrap">
+TXL_Vert vert;
+vert.x = 320;
+vert.y = 180;
+      </code>
+    </p>
+    
+    <p id="TXL_Rect">
+      <h3><code>TXL_Rect</code></h3>
+      <code>float x</code><br />
+      <code>float y</code><br />
+      <code>float w</code><br />
+      <code>float h</code><br />
+      
+      Structure representing a rectangle on the screen. <code>x</code> and <code>y</code> represent the top left of the rectangle.<br />
+      
+      <code style="white-space: pre-wrap">
+TXL_Rect rect;
+rect.x = 160;
+rect.y = 90;
+rect.w = 320;
+rect.h = 180;
+      </code>
+    </p>
+    
+    <p id="TXL_Color">
+      <h3><code>TXL_Color</code></h3>
+      <code>float r</code><br />
+      <code>float g</code><br />
+      <code>float b</code><br />
+      <code>float a</code><br />
+      
+      Structure representing a color. All values range from 0 to 1.<br />
+      
+      <code style="white-space: pre-wrap">
+TXL_Color color;
+color.r = 1.0f;
+color.g = 1.0f;
+color.b = 1.0f;
+color.a = 0.5f;
+      </code>
+    </p>
+    
+    <h3>Functions</h3>
+    
+    <p id="TXL_RenderQuad">
+      <h3><code>void TXL_RenderQuad(const TXL_Vert &v1, const TXL_Vert &v2, const TXL_Color &c), void TXL_RenderQuad(const TXL_Rect &r, const TXL_Color &c)</code></h3>
+      
+      Draws a rectangle on screen. If three arguments are given, <code>v1</code> will be the top left corner, and <code>v2</code> will be the bottom left. If two arguments are given, <code>r</code> will be filled in.<br />
+      <code>c</code> will be the color of the filled rectangle. Alpha values are supported.
+      
+      <code style="white-space: pre-wrap">
+TXL_Vert v1 = {16, 16}, v2 = {32, 32};
+TXL_Rect r = {17, 17, 14, 14};
+TXL_Color c = {1.0f, 1.0f, 1.0f, 1.0f};
+
+TXL_RenderQuad(v1, v2, c);
+c = {0.0f, 0.0f, 0.0f, 1.0f};
+TXL_RenderQuad(r, c);
+      </code>
+    </p>
+    
+    <a href="index.html">Go back</a><br />
+  </body>
+</html>

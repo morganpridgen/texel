@@ -1,0 +1,22 @@
+#!/usr/bin/python3
+
+import os, sys, glob, time
+
+with open("buildconfig.txt") as f: exec(f.read())
+
+files = glob.glob("*.cpp")
+for i in range(len(files)):
+  txt = list(files[i])
+  for j in range(4): txt.pop(len(txt) - 1)
+  files[i] = "".join(txt)
+
+for i in files:
+  compile = 1
+  if os.path.exists("".join([i, ".o"])):
+    if not os.path.getmtime("".join([i, ".o"])) < os.path.getmtime("".join([i, ".cpp"])): compile = 0
+  if compile:
+    print("Compiling %s.cpp" % i)
+    if os.system("g++ -c %s.cpp -I../include %s -o ./%s.o" % (i, compilerFlags, i)): sys.exit(1)
+os.system("g++ *.o -ltexel -lSDL2 -lSDL2_image -lSDL2_mixer -o %s" % exeName)
+
+os.chdir("../")

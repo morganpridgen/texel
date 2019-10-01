@@ -1,0 +1,28 @@
+#!/usr/bin/python3
+
+import os, sys, glob, time
+
+os.chdir("./src")
+files = glob.glob("*.cpp")
+for i in range(len(files)):
+  txt = list(files[i])
+  for j in range(4): txt.pop(len(txt) - 1)
+  files[i] = "".join(txt)
+os.chdir("../lib")
+
+try:
+  if sys.platform.startswith("linux"): compDir = "linux"
+  elif sys.platform.startswith("win32"): compDir = "windows"
+  os.mkdir(compDir)
+except FileExistsError: pass
+for i in files:
+  compile = 1
+  if os.path.exists("".join([compDir, "/txl-", i, ".o"])):
+    if not os.path.getmtime("".join([compDir, "/txl-", i, ".o"])) < os.path.getmtime("".join(["../src/", i, ".cpp"])): compile = 0
+  if compile:
+    print("Compiling %s.cpp" % i)
+    if os.system("g++ -DTEXELDLL -fPIC -std=c++11 -c ../src/%s.cpp -I../include -O2 -ggdb -o ./%s/txl-%s.o" % (i, compDir, i)): sys.exit(1)
+if sys.platform.startswith("linux"): linkCmd = "ar rcs %s/libtexel.a %s/txl-*.o && g++ -shared %s/txl-*.o -Llib/linux -lSDL2 -lSDL2_image -o %s/libtexel.so" % (compDir, compDir, compDir, compDir)
+elif sys.platform.startswith("win32"): linkCmd = "g++ -shared %s\\txl-*.o -LC:\\MinGW\lib -lmingw32 -lSDL2 -lSDL2_image -o %s\\libtexel.dll -Wl,--out-implib,%s\\libtexel.a" % (compDir, compDir, compDir)
+os.system(linkCmd)
+os.chdir("../")
