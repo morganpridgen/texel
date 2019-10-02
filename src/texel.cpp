@@ -32,6 +32,7 @@ bool TXL_Events(TXL_Display *disp) {
 }
 
 void TXL_End() {
+  TXL_EndSound();
   SDL_Quit();
 }
 
