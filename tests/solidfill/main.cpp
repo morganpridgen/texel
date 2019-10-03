@@ -34,9 +34,6 @@ void update() {
 
 void render() {
   TXL_RenderQuad({160, 90, 320, 180}, {1, 1, 1, 1});
-  for (int i = 0; i < 16; i++) {
-    TXL_RenderLine({320 + 16 * cos((float(i) * 22.5) * (3.14 / 180.0)), 180 + 9 * sin((float(i) * 22.5) * (3.14 / 180.0))}, {320 + 16 * cos((float(i + 1) * 22.5) * (3.14 / 180.0)), 180 + 9 * sin((float(i + 1) * 22.5) * (3.14 / 180.0))}, {float(i) / 16.0, 0, 0, 1});
-  }
   disp.refresh();
 }
 
