@@ -12,8 +12,8 @@ bool TXL_Controller::init() {
   lB = 0;
   aX = 0;
   aY = 0;
-  a2X = 0;
-  a2Y = 0;
+  mX = 320;
+  mY = 180;
   int ctrlCount = SDL_NumJoysticks();
   int i = 0;
   while (i < ctrlCount) {
@@ -59,8 +59,8 @@ bool TXL_Controller::update() {
   if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_UP)) aY = -127;
   else if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) aY = 127;
   else aY = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_LEFTY) / 256;
-  a2X = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTX) / 256;
-  a2Y = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTY) / 256;
+  /*a2X = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTX) / 256;
+  a2Y = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTY) / 256;*/
   return 1;
 }
 
@@ -79,8 +79,8 @@ bool TXL_Keyboard::init() {
   id = 0;
   aX = 0;
   aY = 0;
-  a2X = 0;
-  a2Y = 0;
+  mX = 0;
+  mY = 0;
   b = 0;
   lB = 0;
   ctrl = nullptr;

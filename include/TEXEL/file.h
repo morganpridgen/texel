@@ -12,7 +12,7 @@ class TEXELFunc TXL_File {
     FILE *file;
   public:
     TXL_File() {file = nullptr;}
-    bool init(const char*, const char*);
+    bool init(const char*, const char);
     bool read(void*, const int);
     bool read(void *data) {return read(data, sizeof(data));}
     bool write(void*, const int);

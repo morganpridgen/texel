@@ -25,8 +25,8 @@ class TEXELFunc TXL_Controller {
   protected:
     int aX;
     int aY;
-    int a2X;
-    int a2Y;
+    int mX;
+    int mY;
     int b;
     int lB;
     SDL_GameController *ctrl;
@@ -42,8 +42,8 @@ class TEXELFunc TXL_Controller {
     bool buttonRelease(TXL_CtrlButton button) {return (~b & button) && (lB & button);}
     int leftJoyX() {return aX;}
     int leftJoyY() {return aY;}
-    int rightJoyX() {return a2X;}
-    int rightJoyY() {return a2Y;}
+    int mouseX() {return mX;}
+    int mouseY() {return mY;}
     int getId() {return id;}
     void rumble(float, int);
 };

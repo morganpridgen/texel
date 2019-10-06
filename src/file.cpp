@@ -86,12 +86,11 @@ char *TXL_SavePath(const char *file) {
   return out;
 }
 
-bool TXL_File::init(const char *path, const char *mode) {
+bool TXL_File::init(const char *path, const char mode) {
   close();
-  char *newMode = new char[strlen(mode) + 2];
-  sprintf(newMode, "%sb", mode);
+  char newMode[3];
+  sprintf(newMode, "%cb", mode);
   file = fopen(path, newMode);
-  delete [] newMode;
   return file != NULL;
 }
 
