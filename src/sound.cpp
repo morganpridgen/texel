@@ -4,7 +4,9 @@
 #include <cstring>
 #include <cmath>
 #define tmod(x, y) (x - y * floor(x / y))
-#define channelCount 4
+#define sChannelCount 2
+#define mChannelCount 2
+#define channelCount (sChannelCount + mChannelCount)
 #define logSound 0
 
 void TXL_HandleAudio(void *, unsigned char*, int);
@@ -49,7 +51,7 @@ bool TXL_InitSound() {
 void TXL_PlaySound(const TXL_Square &newSound) {
   float maxVol = 0;
   int highChan = 0;
-  for (int i = 0; i < channelCount; i++) {
+  for (int i = mChannelCount; i < channelCount; i++) {
     if (!squares[i]) {
       highChan = i;
       break;
@@ -66,7 +68,7 @@ void TXL_PlaySound(const TXL_Square &newSound) {
 void TXL_PlaySound(const TXL_Noise &newSound) {
   float maxVol = 0;
   int highChan = 0;
-  for (int i = 0; i < channelCount; i++) {
+  for (int i = mChannelCount; i < channelCount; i++) {
     if (!noises[i]) {
       highChan = i;
       break;
@@ -83,7 +85,7 @@ void TXL_PlaySound(const TXL_Noise &newSound) {
 void TXL_PlaySound(const TXL_Triangle &newSound) {
   float maxVol = 0;
   int highChan = 0;
-  for (int i = 0; i < channelCount; i++) {
+  for (int i = mChannelCount; i < channelCount; i++) {
     if (!triangles[i]) {
       highChan = i;
       break;
@@ -100,7 +102,7 @@ void TXL_PlaySound(const TXL_Triangle &newSound) {
 void TXL_PlaySound(const TXL_Sawtooth &newSound) {
   float maxVol = 0;
   int highChan = 0;
-  for (int i = 0; i < channelCount; i++) {
+  for (int i = mChannelCount; i < channelCount; i++) {
     if (!saws[i]) {
       highChan = i;
       break;
@@ -114,7 +116,53 @@ void TXL_PlaySound(const TXL_Sawtooth &newSound) {
   *saws[highChan] = newSound;
 }
 
+void TXL_SetMChannel(const TXL_Square &newSound, int chan) {
+  if (chan < 0 || chan >= mChannelCount) return;
+  if (!squares[chan]) squares[chan] = new TXL_Square;
+  *squares[chan] = newSound;
+}
+
+void TXL_SetMChannel(const TXL_Noise &newSound, int chan) {
+  if (chan < 0 || chan >= mChannelCount) return;
+  if (!noises[chan]) noises[chan] = new TXL_Noise;
+  *noises[chan] = newSound;
+}
+
+void TXL_SetMChannel(const TXL_Triangle &newSound, int chan) {
+  if (chan < 0 || chan >= mChannelCount) return;
+  if (!triangles[chan]) triangles[chan] = new TXL_Triangle;
+  *triangles[chan] = newSound;
+}
+
+void TXL_SetMChannel(const TXL_Sawtooth &newSound, int chan) {
+  if (chan < 0 || chan >= mChannelCount) return;
+  if (!saws[chan]) saws[chan] = new TXL_Sawtooth;
+  *saws[chan] = newSound;
+}
+
+void TXL_ClearSounds() {
+  for (int i = 0; i < channelCount; i++) {
+    if (squares[i]) {
+      delete squares[i];
+      squares[i] = nullptr;
+    }
+    if (noises[i]) {
+      delete noises[i];
+      noises[i] = nullptr;
+    }
+    if (triangles[i]) {
+      delete triangles[i];
+      triangles[i] = nullptr;
+    }
+    if (saws[i]) {
+      delete saws[i];
+      saws[i] = nullptr;
+    }
+  }
+}
+
 void TXL_EndSound() {
+  TXL_ClearSounds();
   #if logSound != 0
     recording.close();
   #endif
@@ -125,11 +173,9 @@ void TXL_HandleAudio(void *userdata, unsigned char *stream, int len) {
   static float t = 0;
   int tSounds, sqSnd, nsSnd, trSnd, swSnd, bitShift;
   for (int i = 0; i < len; i++) {
-    tSounds = 0;
     sqSnd = 0, nsSnd = 0, trSnd = 0, swSnd = 0;
     for (int j = 0; j < channelCount; j++) {
       if (squares[j]) {
-        tSounds++;
         sqSnd += (unsigned char)(float(int(t * squares[j]->freq * 2.0f) % 8 < (squares[j]->duty == 0 ? 1 : (squares[j]->duty == 1 ? 2 : (squares[j]->duty == 2 ? 4 : 6)))) * 255.0f * squares[j]->vol);
         squares[j]->vol -= squares[j]->fade / freq;
         if (squares[j]->vol <= 0.0f) {
@@ -138,7 +184,6 @@ void TXL_HandleAudio(void *userdata, unsigned char *stream, int len) {
         }
       }
       if (noises[j]) {
-        tSounds++;
         nsSnd += (unsigned char)(float(noises[j]->seed & 0b11111111) * noises[j]->vol);
         bitShift = noises[j]->bit ? 15 : 31;
         if (i % noises[j]->cycle == 0) {
@@ -152,7 +197,6 @@ void TXL_HandleAudio(void *userdata, unsigned char *stream, int len) {
         }
       }
       if (triangles[j]) {
-        tSounds++;
         if (tmod(t * triangles[j]->freq * 2.0f, 2) < 1) trSnd += (unsigned char)(tmod(t * triangles[j]->freq * 2.0f, 2) * 255.0f * triangles[j]->vol);
         else trSnd += (unsigned char)(tmod(t * triangles[j]->freq * -2.0f, 2) * 255.0f * triangles[j]->vol);
         triangles[j]->vol -= triangles[j]->fade / freq;
@@ -162,7 +206,6 @@ void TXL_HandleAudio(void *userdata, unsigned char *stream, int len) {
         }
       }
       if (saws[j]) {
-        tSounds++;
         swSnd += (unsigned char)(tmod(t * saws[j]->freq, 1) * 255.0f * saws[j]->vol);
         saws[j]->vol -= saws[j]->fade / freq;
         if (saws[j]->vol <= 0.0f) {
@@ -171,7 +214,7 @@ void TXL_HandleAudio(void *userdata, unsigned char *stream, int len) {
         }
       }
     }
-    stream[i] = tSounds == 0 ? 0 : (sqSnd + nsSnd + trSnd + swSnd) / tSounds;
+    stream[i] = (sqSnd + nsSnd + trSnd + swSnd) / (4 * channelCount);
     t += 1.0f / freq;
     if (t >= 1.0f) t -= 1.0f;
   }
