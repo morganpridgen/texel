@@ -2,6 +2,7 @@
 #include <cstring>
 #include <cstdio>
 #include <SDL2/SDL.h>
+#include <TEXEL/display.h>
 
 int tCtrls = 0;
 
@@ -10,10 +11,10 @@ bool TXL_Controller::init() {
   ctrl = nullptr;
   b = 0;
   lB = 0;
-  aX = 0;
-  aY = 0;
-  mX = 320;
-  mY = 180;
+  aX = 0.0f;
+  aY = 0.0f;
+  mX = 320.0f;
+  mY = 180.0f;
   int ctrlCount = SDL_NumJoysticks();
   int i = 0;
   while (i < ctrlCount) {
@@ -53,12 +54,12 @@ bool TXL_Controller::update() {
   b |= CtrlSelect * SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_BACK);
   b |= CtrlL * SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
   b |= CtrlR * SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
-  if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) aX = -127;
-  else if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) aX = 127;
-  else aX = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_LEFTX) / 256;
-  if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_UP)) aY = -127;
-  else if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) aY = 127;
-  else aY = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_LEFTY) / 256;
+  if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) aX = -1.0f;
+  else if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) aX = 1.0f;
+  else aX = float(SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_LEFTX)) / 32768.0f;
+  if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_UP)) aY = -1.0f;
+  else if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) aY = 1.0f;
+  else aY = float(SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_LEFTY)) / 32768.0f;
   /*a2X = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTX) / 256;
   a2Y = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTY) / 256;*/
   return 1;
@@ -77,10 +78,10 @@ void TXL_Controller::rumble(float power, int time) {
 
 bool TXL_Keyboard::init() {
   id = 0;
-  aX = 0;
-  aY = 0;
-  mX = 0;
-  mY = 0;
+  aX = 0.0f;
+  aY = 0.0f;
+  mX = 0.0f;
+  mY = 0.0f;
   b = 0;
   lB = 0;
   ctrl = nullptr;
@@ -103,8 +104,11 @@ bool TXL_Keyboard::update() {
   b |= CtrlSelect * (keys[SDL_SCANCODE_TAB]);
   b |= CtrlL * (keys[SDL_SCANCODE_J]);
   b |= CtrlR * (keys[SDL_SCANCODE_SEMICOLON]);
-  aX = 127 * (keys[SDL_SCANCODE_D] - keys[SDL_SCANCODE_A]);
-  aY = 127 * (keys[SDL_SCANCODE_S] - keys[SDL_SCANCODE_W]);
+  aX = float(keys[SDL_SCANCODE_D] - keys[SDL_SCANCODE_A]);
+  aY = float(keys[SDL_SCANCODE_S] - keys[SDL_SCANCODE_W]);
+  int tMX, tMY;
+  SDL_GetMouseState(&tMX, &tMY);
+  mX = gDisp->pixToCoord(tMX), mY = gDisp->pixToCoord(tMY);
   return 1;
 }
 

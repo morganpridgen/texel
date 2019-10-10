@@ -55,6 +55,7 @@ void update() {
 
 void render() {
   arrow.render(x, y, 2, 2, r * (180.0f / 3.14f));
+  TXL_RenderQuad(ctrl->mouseX(), ctrl->mouseY(), 8, 8, {1.0f, 1.0f, 1.0f, 1.0f});
   disp.refresh();
 }
 

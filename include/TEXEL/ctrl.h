@@ -23,10 +23,10 @@ enum TXL_CtrlButton {
 
 class TEXELFunc TXL_Controller {
   protected:
-    int aX;
-    int aY;
-    int mX;
-    int mY;
+    float aX;
+    float aY;
+    float mX;
+    float mY;
     int b;
     int lB;
     SDL_GameController *ctrl;
@@ -40,10 +40,10 @@ class TEXELFunc TXL_Controller {
     bool buttonPress(TXL_CtrlButton button) {return b & button;}
     bool buttonClick(TXL_CtrlButton button) {return (b & button) && (~lB & button);}
     bool buttonRelease(TXL_CtrlButton button) {return (~b & button) && (lB & button);}
-    int leftJoyX() {return aX;}
-    int leftJoyY() {return aY;}
-    int mouseX() {return mX;}
-    int mouseY() {return mY;}
+    float leftJoyX() {return aX;}
+    float leftJoyY() {return aY;}
+    float mouseX() {return mX;}
+    float mouseY() {return mY;}
     int getId() {return id;}
     void rumble(float, int);
 };

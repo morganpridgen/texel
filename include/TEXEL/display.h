@@ -1,6 +1,7 @@
 #ifndef texel_displayh
 #define texel_displayh
 
+#include <cmath>
 #include <SDL2/SDL.h>
 #include <TEXEL/os.h>
 
@@ -29,6 +30,7 @@ class TEXELFunc TXL_Display { // display handler
     void event(SDL_Event);
     SDL_Renderer *getRenderer() {return renderer;}
     int coordToPix(float coord) {return round(coord * info.sR);}
+    float pixToCoord(int pix) {return float(pix) / info.sR;}
     
 };
 
