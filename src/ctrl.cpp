@@ -62,6 +62,8 @@ bool TXL_Controller::update() {
   else aY = float(SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_LEFTY)) / 32768.0f;
   /*a2X = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTX) / 256;
   a2Y = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTY) / 256;*/
+  mX += float(SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTX)) / 8192.0f; // 4 px / frame = 240 px / sec
+  mY += float(SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTY)) / 8192.0f;
   return 1;
 }
 
