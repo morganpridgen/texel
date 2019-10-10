@@ -103,20 +103,33 @@ if (ctrl->buttonClick(CtrlA)) ctrl->rumble(1.0f, 250);
         </code>
       </p>
       
-      <p id="TXL_Controller::joys">
-        <h3><code>int TXL_Controller::leftJoyX(), int TXL_Controller::leftJoyY(), int TXL_Controller::rightJoyX(), int TXL_Controller::rightJoyY()</code></h3>
+      <p id="TXL_Controller::leftJoystick">
+        <h3><code>float TXL_Controller::leftJoyX(), float TXL_Controller::leftJoyY()</code></h3>
         
-        Returns a joystick axis. The D-Pad will take priority over the left joystick. In the case of <code>TXL_Keyboard</code>, the WASD keys control the left joystick, while the right joystick can't be moved.<br />
-        Joystick axes are constrained to the range (-128, 128).<br />
+        Returns a joystick axis. The D-Pad will take priority over the left joystick. In the case of <code>TXL_Keyboard</code>, the WASD keys control the left joystick.<br />
+        Joystick axes are constrained to the range (-1.0f, 1.0f).<br />
         
         <code style="white-space: pre-wrap">
 int x, y;
 TXL_Texture texture
 TXL_Controller *ctrl;
 // other code
-x += ctrl->leftJoyX();
-y += ctrl->leftJoyY();
+x += 4 * ctrl->leftJoyX();
+y += 4 * ctrl->leftJoyY();
 texture.render(x, y, atan2(ctrl->rightJoyY(), ctrl->rightJoyX()));
+        </code>
+      </p>
+      
+      <p id="TXL_Controller::mouse">
+        <h3><code>float TXL_Controller::mouseX(), float TXL_Controller::mouseY()</code></h3>
+        
+        Returns the position of the controller's mouse. For <code>TXL_Controller</code>, the right joystick moves the mouse. For <code>TXL_Keyboard</code>, the physical mouse is used.
+        Values for the mouse inside the window are (0.0f, 640.0f) for the x position, and (0.0f, 360.0f) for the y position.
+        
+        <code style="white-space: pre-wrap">
+TXL_Controller *ctrl;
+// other code
+TXL_RenderQuad(ctrl->mouseX(), ctrl->mouseY(), 8.0f, 8.0f, {1.0f, 1.0f, 1.0f, 1.0f});
         </code>
       </p>
       

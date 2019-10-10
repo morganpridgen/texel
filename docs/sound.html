@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <title>
+      Texel Documentation - Sound
+    </title>
+  </head>
+  <body>
+    <h2>Texel Documentation - Sound</h2><br />
+    
+    <h3>Structures</h3>
+    <p id="TXL_Square">
+      <h3><code>TXL_Square</code></h3>
+      <code>float freq</code><br />
+      <code>float vol</code><br />
+      <code>float fade</code><br />
+      <code>int duty</code><br />
+      
+      Structure representing a square wave.<br />
+      
+      <code style="white-space: pre-wrap">
+TXL_Square square;
+square.freq = 440;
+square.vol = 1.0f;
+square.fade = 0.5f;
+square.duty = 2;
+      </code>
+    </p>
+    
+    <h3>Functions</h3>
+    
+    <p id="TXL_PlaySound">
+      <h3><code>void TXL_PlaySound(const TXL_Square &snd)</code></h3>
+      
+      Schedule a sound to play.
+      
+      <code style="white-space: pre-wrap">
+TXL_Square square;
+square.freq = 440;
+square.vol = 1.0f;
+square.fade = 0.5f;
+square.duty = 2;
+TXL_PlaySound(square);
+      </code>
+    </p>
+    
+    <a href="index.html">Go back</a><br />
+  </body>
+</html>
