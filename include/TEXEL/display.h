@@ -31,7 +31,6 @@ class TEXELFunc TXL_Display { // display handler
     SDL_Renderer *getRenderer() {return renderer;}
     int coordToPix(float coord) {return round(coord * info.sR);}
     float pixToCoord(int pix) {return float(pix) / info.sR;}
-    
 };
 
 extern TEXELFunc TXL_Display *gDisp;
