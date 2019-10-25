@@ -2,7 +2,7 @@ from distutils.core import setup, Extension
 
 texel = Extension(
   "texel",
-  sources = ["texelmodule.cpp", "txlsquare.cpp"],
+  sources = ["texelmodule.cpp", "txlsquare.cpp", "txlnoise.cpp", "txltriangle.cpp", "txlsawtooth.cpp"],
   language = "C++",
   libraries=["texel"]
 )

@@ -4,6 +4,9 @@
 #include <TEXEL/texel.h>
 
 #include "txlsquare.h"
+#include "txlnoise.h"
+#include "txltriangle.h"
+#include "txlsawtooth.h"
 
 static PyObject *init(PyObject *self, PyObject *args) {
   PyObject *ok = TXL_Init() ? Py_True : Py_False;
@@ -37,6 +40,15 @@ PyMODINIT_FUNC PyInit_texel() {
   
   if (PyType_Ready(&SquareType) < 0) return nullptr;
   PyModule_AddObject(m, "Square", (PyObject *)&SquareType);
+  
+  if (PyType_Ready(&NoiseType) < 0) return nullptr;
+  PyModule_AddObject(m, "Noise", (PyObject *)&NoiseType);
+  
+  if (PyType_Ready(&TriangleType) < 0) return nullptr;
+  PyModule_AddObject(m, "Triangle", (PyObject *)&TriangleType);
+  
+  if (PyType_Ready(&SawtoothType) < 0) return nullptr;
+  PyModule_AddObject(m, "Sawtooth", (PyObject *)&SawtoothType);
   
   return m;
 }
