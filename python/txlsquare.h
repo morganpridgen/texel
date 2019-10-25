@@ -14,51 +14,18 @@ static PyMemberDef SquareMembers[] = {
   {NULL}
 };
 
-static void SquareDealloc(Square *self) {
-  Py_TYPE(self)->tp_free((PyObject *)self);
-}
-
-static PyObject *SquareNew(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-  Square *self;
-  self = (Square *)type->tp_alloc(type, 0);
-  if (self) memset(&(self->snd), 0, sizeof(TXL_Square));
-  return (PyObject *)self;
-}
-
-static int SquareInit(Square *self, PyObject *args, PyObject *kwds) {
-  return 0;
-}
-
-static PyObject *SquareFreq(Square *self, PyObject *args) {
-  float freq;
-  if (!PyArg_ParseTuple(args, "f", &freq)) return nullptr;
-  self->snd.freq = freq;
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-
-static PyObject *SquareFade(Square *self, PyObject *args) {
-  float vol, fade = 1.0f;
-  if (!PyArg_ParseTuple(args, "f|f", &vol, &fade)) return nullptr;
-  self->snd.vol = vol;
-  self->snd.fade = vol / fade;
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-
-static PyObject *SquarePlay(Square *self, PyObject *args) {
-  int channel = -1;
-  if (!PyArg_ParseTuple(args, "|i", &channel)) return nullptr;
-  
-  if (channel < 0) TXL_PlaySound(self->snd);
-  else TXL_SetMChannel(self->snd, channel);
-  Py_INCREF(Py_None);
-  return Py_None;
-}
+void SquareDealloc(Square*);
+PyObject *SquareNew(PyTypeObject*, PyObject*, PyObject*);
+int SquareInit(Square*, PyObject*, PyObject*);
+PyObject *SquareFreq(Square*, PyObject*);
+PyObject *SquareFade(Square*, PyObject*);
+PyObject *SquareDuty(Square*, PyObject*);
+PyObject *SquarePlay(Square*, PyObject*);
 
 static PyMethodDef SquareMethods[] = {
   {"setFreq", PyCFunction(SquareFreq), METH_VARARGS, "Set the frequency of the sound"},
   {"setVol", PyCFunction(SquareFade), METH_VARARGS, "Set the volume of the sound and how long it plays"},
+  {"setDuty", PyCFunction(SquareDuty), METH_VARARGS, "Set the duty cycle of the sound."},
   {"play", PyCFunction(SquarePlay), METH_VARARGS, "Plays the sound"},
   {NULL}
 };
