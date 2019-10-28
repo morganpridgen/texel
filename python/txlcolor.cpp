@@ -14,6 +14,7 @@ PyObject *ColorNew(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 int ColorInit(Color *self, PyObject *args, PyObject *kwds) {
   self->r = 0.0f, self ->g = 0.0f, self->b = 0.0f, self->a = 1.0f;
   if (!PyArg_ParseTuple(args, "fff|f", &(self->r), &(self->g), &(self->b), &(self->a))) return 0;
+  printf("%p\n", self);
   return 0;
 }
 
