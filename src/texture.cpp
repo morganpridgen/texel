@@ -54,13 +54,20 @@ void TXL_Texture::free() {
 
 void TXL_Texture::render(float x, float y, float sX, float sY, float r) {
   SDL_Rect sR, dR;
-  sR = {cL * tW, cT * tH, (cR - cL) * tW, (cB - cT) * tH};
+  sR = {round(fmin(cL, cR) * tW), round(fmin(cT, cB) * tH), round(fabs(cR - cL) * tW), round(fabs(cB - cT) * tH)};
   float w = iW * sX * (cR - cL), h = iH * sY * (cB - cT);
   dR = {gDisp->coordToPix(x - (w / 2.0f)), gDisp->coordToPix(y - (h / 2.0f)), gDisp->coordToPix(w), gDisp->coordToPix(h)};
-  SDL_RenderCopyEx(gDisp->getRenderer(), texture, &sR, &dR, r, NULL, SDL_FLIP_NONE);
+  int flip;
+  if (cL > cR) flip = flip | SDL_FLIP_HORIZONTAL;
+  if (cT > cB) flip = flip | SDL_FLIP_VERTICAL;
+  SDL_RenderCopyEx(gDisp->getRenderer(), texture, &sR, &dR, r, NULL, (SDL_RendererFlip)flip);
 }
 
 void TXL_Texture::render(float x, float y, float sX, float sY) {
+  if (cL > cR || cT > cB) {
+    render(x, y, sX, sY, 0);
+    return;
+  }
   SDL_Rect sR, dR;
   sR = {round(cL * tW), round(cT * tH), round((cR - cL) * tW), round((cB - cT) * tH)};
   float w = iW * sX * (cR - cL), h = iH * sY * (cB - cT);
