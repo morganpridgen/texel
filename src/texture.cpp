@@ -55,7 +55,7 @@ void TXL_Texture::free() {
 void TXL_Texture::render(float x, float y, float sX, float sY, float r) {
   SDL_Rect sR, dR;
   sR = {round(fmin(cL, cR) * tW), round(fmin(cT, cB) * tH), round(fabs(cR - cL) * tW), round(fabs(cB - cT) * tH)};
-  float w = iW * sX * (cR - cL), h = iH * sY * (cB - cT);
+  float w = iW * sX * fabs(cR - cL), h = iH * sY * fabs(cB - cT);
   dR = {gDisp->coordToPix(x - (w / 2.0f)), gDisp->coordToPix(y - (h / 2.0f)), gDisp->coordToPix(w), gDisp->coordToPix(h)};
   int flip;
   if (cL > cR) flip = flip | SDL_FLIP_HORIZONTAL;
