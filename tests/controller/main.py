@@ -17,7 +17,7 @@ while d.refresh():
     y += 4 * sin(r)
   
   texel.drawRect(x, y, 2, 2, texel.Color(1, 1, 1))
-  arrow.render(x, y, 2, 2, r)
+  arrow.render(x, y)
   texel.drawRect(ctrl.mouseX(), ctrl.mouseY(), 8, 8, texel.Color(1, 1, 1))
 
 del(ctrl)

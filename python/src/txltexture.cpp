@@ -27,7 +27,7 @@ int TextureInit(Texture *self, PyObject *args, PyObject *kwds) {
 PyObject *TextureRender(Texture *self, PyObject *args) {
   float x, y, w = 1.0f, h = 1.0f, r = 0.0f;
   if (!PyArg_ParseTuple(args, "ff|fff", &x, &y, &w, &h, &r)) return nullptr;
-  self->tex.render(x, y, w, h, r * (180 / 3.14159f));
+  self->tex.render(x, y, w, h, r * (180 / 3.141593f));
   Py_INCREF(Py_None);
   return Py_None;
 }
@@ -42,7 +42,7 @@ PyObject *TextureSetClip(Texture *self, PyObject *args) {
 
 PyObject *TextureSetColorMod(Texture *self, PyObject *args) {
   Color *color;
-  if (!PyArg_ParseTuple(args, "O!", &color)) return nullptr;
+  if (!PyArg_ParseTuple(args, "O!", &ColorType, &color)) return nullptr;
   self->tex.setColorMod(color->r, color->g, color->b, color->a);
   Py_INCREF(Py_None);
   return Py_None;

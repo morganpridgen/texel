@@ -18,6 +18,7 @@ enum TXL_CtrlButton {
     CtrlX = 0b1000,
     CtrlY = 0b1,
   #endif // add nintendo switch variant?
+  CtrlM = 0b100000000,
   CtrlNone = 0b0
 };
 

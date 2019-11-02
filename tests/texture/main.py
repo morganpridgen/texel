@@ -10,7 +10,7 @@ t = 0
 
 while d.refresh():
   t += 1
-  bR = t
+  bR = t / 64
   if t > 120:
     bX = 320 + 32 * cos(t * (0.0174) / 2)
     bY = 180 + 32 * sin(t * (0.0174) / 2)
@@ -19,6 +19,7 @@ while d.refresh():
     bH = 1 + sin(t * (0.0174)) / 2
   
   box.setClip(((t // 8) % 4) * 8, 0, 8, 8)
+  box.setColorMod(texel.Color(sin(bR) / 2 + 0.5, cos(bR) / 2 + 0.5, (0 - sin(bR)) / 2 + 0.5))
   box.render(bX, bY, bW * 4, bH * 4, bR)
 
 del(t)

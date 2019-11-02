@@ -54,6 +54,7 @@ bool TXL_Controller::update() {
   b |= CtrlSelect * SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_BACK);
   b |= CtrlL * SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
   b |= CtrlR * SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+  b |= CtrlM * SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_RIGHTSTICK);
   if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) aX = -1.0f;
   else if (SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) aX = 1.0f;
   else aX = float(SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_LEFTX)) / 32768.0f;
@@ -64,6 +65,10 @@ bool TXL_Controller::update() {
   a2Y = SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTY) / 256;*/
   mX += float(SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTX)) / 8192.0f; // 4 px / frame = 240 px / sec
   mY += float(SDL_GameControllerGetAxis(ctrl, SDL_CONTROLLER_AXIS_RIGHTY)) / 8192.0f;
+  if (mX < 0.0f) mX = 0.0f;
+  if (mX > 640.0f) mX = 640.0f;
+  if (mY < 0.0f) mY = 0.0f;
+  if (mY > 360.0f) mY = 360.0f;
   return 1;
 }
 
@@ -109,7 +114,7 @@ bool TXL_Keyboard::update() {
   aX = float(keys[SDL_SCANCODE_D] - keys[SDL_SCANCODE_A]);
   aY = float(keys[SDL_SCANCODE_S] - keys[SDL_SCANCODE_W]);
   int tMX, tMY;
-  SDL_GetMouseState(&tMX, &tMY);
+  b |= CtrlM * (SDL_GetMouseState(&tMX, &tMY) & SDL_BUTTON(SDL_BUTTON_LEFT) != 0);
   mX = gDisp->pixToCoord(tMX), mY = gDisp->pixToCoord(tMY);
   return 1;
 }
