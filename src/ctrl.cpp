@@ -92,6 +92,7 @@ bool TXL_Keyboard::init() {
   b = 0;
   lB = 0;
   ctrl = nullptr;
+  SDL_ShowCursor(SDL_DISABLE);
   return 1;
 };
 
@@ -115,11 +116,16 @@ bool TXL_Keyboard::update() {
   aY = float(keys[SDL_SCANCODE_S] - keys[SDL_SCANCODE_W]);
   int tMX, tMY;
   b |= CtrlM * (SDL_GetMouseState(&tMX, &tMY) & SDL_BUTTON(SDL_BUTTON_LEFT) != 0);
-  mX = gDisp->pixToCoord(tMX), mY = gDisp->pixToCoord(tMY);
+  mX = gDisp->mouseXToCoord(tMX), mY = gDisp->mouseYToCoord(tMY);
+  if (mX < 0.0f) mX = 0.0f;
+  if (mX > 640.0f) mX = 640.0f;
+  if (mY < 0.0f) mY = 0.0f;
+  if (mY > 360.0f) mY = 360.0f;
   return 1;
 }
 
 void TXL_Keyboard::end() {
+  SDL_ShowCursor(SDL_ENABLE);
 }
 
 void TXL_ManageController(TXL_Controller *&ctrl) {
