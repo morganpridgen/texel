@@ -1,4 +1,5 @@
 #include <TEXEL/display.h>
+#include <TEXEL/file.h>
 #include <cstdio>
 #include <cmath>
 #include <SDL2/SDL.h>
@@ -21,7 +22,7 @@ bool TXL_Display::init(const char name[]) {
     printf("Error creating window. %s\n", SDL_GetError());
     return 0;
   }
-  SDL_Surface *icon = IMG_Load("icon.png");
+  SDL_Surface *icon = IMG_Load(TXL_DataPath("icon.png"));
   SDL_SetWindowIcon(win, icon);
   SDL_FreeSurface(icon);
   SDL_RaiseWindow(win);
