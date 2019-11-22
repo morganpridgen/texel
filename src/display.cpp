@@ -2,6 +2,7 @@
 #include <TEXEL/file.h>
 #include <cstdio>
 #include <cmath>
+#include <cstring>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #define min(x, y) ((x) < (y) ? (x) : (y))
@@ -42,13 +43,17 @@ bool TXL_Display::init(const char name[]) {
   SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
   SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
   SDL_RenderClear(renderer);
+  
+  strcpy(winName, name);
   SDL_RendererInfo rInfo;
   SDL_GetRendererInfo(renderer, &rInfo);
   char dName[64];
-  sprintf(dName, "%s (%s)", name, rInfo.name);
+  sprintf(dName, "%s (backend: %s, fps: 0.0)", winName, rInfo.name);
   SDL_SetWindowTitle(win, dName);
+  
   gDisp = this;
   lastRender = 0;
+  fTime = 0;
   return 1;
 }
 
@@ -59,6 +64,12 @@ void TXL_Display::end() {
 
 void TXL_Display::refresh() {
   int delay = 15 - (SDL_GetTicks() - lastRender);
+  SDL_RendererInfo rInfo;
+  SDL_GetRendererInfo(renderer, &rInfo);
+  fTime += (float(SDL_GetTicks() - lastRender) - fTime) / 8.0f;
+  char dName[64];
+  sprintf(dName, "%s (backend: %s, fps: %.1f)", winName, rInfo.name, 1000.0f / fTime);
+  SDL_SetWindowTitle(win, dName);
   if (delay > 1) SDL_Delay(delay);
   lastRender = SDL_GetTicks();
   SDL_RenderPresent(renderer);

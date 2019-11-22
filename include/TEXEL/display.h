@@ -22,6 +22,8 @@ class TEXELFunc TXL_Display { // display handler
     SDL_Window *win;
     SDL_Renderer *renderer;
     unsigned int lastRender;
+    char winName[32];
+    float fTime;
   public:
     bool init(const char[]);
     void end();
