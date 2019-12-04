@@ -8,6 +8,21 @@
 
 #include <TEXEL/texel.h>
 
+#define CTRLBUTTONDEF \
+PyModule_AddIntConstant(m, "CtrlN", CtrlN);\
+PyModule_AddIntConstant(m, "CtrlS", CtrlS);\
+PyModule_AddIntConstant(m, "CtrlE", CtrlE);\
+PyModule_AddIntConstant(m, "CtrlW", CtrlW);\
+PyModule_AddIntConstant(m, "CtrlStart", CtrlStart);\
+PyModule_AddIntConstant(m, "CtrlSelect", CtrlSelect);\
+PyModule_AddIntConstant(m, "CtrlL", CtrlL);\
+PyModule_AddIntConstant(m, "CtrlR", CtrlR);\
+PyModule_AddIntConstant(m, "CtrlA", CtrlA);\
+PyModule_AddIntConstant(m, "CtrlB", CtrlB);\
+PyModule_AddIntConstant(m, "CtrlX", CtrlX);\
+PyModule_AddIntConstant(m, "CtrlY", CtrlY);\
+PyModule_AddIntConstant(m, "CtrlM", CtrlM);
+
 struct Controller {
   PyObject_HEAD
   TXL_Controller *ctrl;

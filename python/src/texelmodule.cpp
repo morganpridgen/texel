@@ -69,5 +69,7 @@ PyMODINIT_FUNC PyInit_texel() {
   if (PyType_Ready(&ControllerType) < 0) return nullptr;
   PyModule_AddObject(m, "Controller", (PyObject *)&ControllerType);
   
+  CTRLBUTTONDEF
+  
   return m;
 }
