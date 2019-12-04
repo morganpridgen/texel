@@ -3,7 +3,7 @@ from math import *
 
 texel.init()
 d = texel.Display("test")
-box = texel.Texture("box.png", 32, 8)
+box = texel.Texture("box.png", 0, 32, 8)
 
 bX, bY, bW, bH, bR = 320, 180, 1, 1, 0
 t = 0

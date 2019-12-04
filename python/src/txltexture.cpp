@@ -1,6 +1,23 @@
 #include "txltexture.h"
 #include "txlcolor.h"
 
+PyObject *loadFont(PyObject *self, PyObject *args) {
+  char *path;
+  if (!PyArg_ParseTuple(args, "s", &path)) return nullptr;
+  if (!TXL_LoadFont(path)) {
+    PyErr_SetString(PyExc_OSError, "Error loading font");
+    return nullptr;
+  }
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
+PyObject *unloadFont(PyObject *self, PyObject *args) {
+  TXL_UnloadFont();
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 void TextureDealloc(Texture *self) {
   self->tex.free();
   Py_TYPE(self)->tp_free((PyObject *)self);
@@ -15,12 +32,21 @@ PyObject *TextureNew(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 
 int TextureInit(Texture *self, PyObject *args, PyObject *kwds) {
   char *path;
+  int isText = 0;
   int w = -1, h = -1;
-  if (!PyArg_ParseTuple(args, "s|ii", &path, &w, &h)) return -1;
-  if (!self->tex.load(path, w, h)) {
-    PyErr_SetString(PyExc_OSError, "Error loading texture");
-    return -1;
+  if (!PyArg_ParseTuple(args, "s|pii", &path, &isText, &w, &h)) return -1;
+  if (!isText) {
+    if (!self->tex.load(path, w, h)) {
+      PyErr_SetString(PyExc_OSError, "Error loading texture");
+      return -1;
+    }
+  } else {
+    TXL_Texture *tmp = TXL_RenderText(path, 1.0f, 1.0f, 1.0f);
+    memcpy(&(self->tex), tmp, sizeof(self->tex));
+    w = self->tex.width(), h = self->tex.height();
+    delete tmp;
   }
+  self->tex.setClip(0, w, 0, h);
   return 0;
 }
 

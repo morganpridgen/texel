@@ -8,6 +8,13 @@
 
 #include <TEXEL/texel.h>
 
+PyObject *loadFont(PyObject *, PyObject *);
+PyObject *unloadFont(PyObject *, PyObject *);
+
+#define TEXTUREDEC \
+  {"loadFont", loadFont, METH_VARARGS, "Loads a font"},\
+  {"unloadFont", unloadFont, METH_NOARGS, "Unoads the font"}
+
 struct Texture {
   PyObject_HEAD
   TXL_Texture tex;

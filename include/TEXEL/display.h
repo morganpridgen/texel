@@ -24,6 +24,7 @@ class TEXELFunc TXL_Display { // display handler
     unsigned int lastRender;
     char winName[32];
     float fTime;
+    int updateMs;
   public:
     bool init(const char[]);
     void end();

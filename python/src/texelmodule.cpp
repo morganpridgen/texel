@@ -29,6 +29,7 @@ static PyMethodDef texelMethods[] {
   {"init", init, METH_NOARGS, "Initializes Texel"},
   {"end", end, METH_NOARGS, "Ends Texel"},
   SOLIDFILLDEC,
+  TEXTUREDEC,
   {NULL, NULL, 0, NULL}
 };
 

@@ -54,6 +54,7 @@ bool TXL_Display::init(const char name[]) {
   gDisp = this;
   lastRender = 0;
   fTime = 0;
+  updateMs = 0;
   return 1;
 }
 
@@ -63,13 +64,17 @@ void TXL_Display::end() {
 }
 
 void TXL_Display::refresh() {
-  int delay = 15 - (SDL_GetTicks() - lastRender);
-  SDL_RendererInfo rInfo;
-  SDL_GetRendererInfo(renderer, &rInfo);
   fTime += (float(SDL_GetTicks() - lastRender) - fTime) / 8.0f;
-  char dName[64];
-  sprintf(dName, "%s (backend: %s, fps: %.1f)", winName, rInfo.name, 1000.0f / fTime);
-  SDL_SetWindowTitle(win, dName);
+  updateMs += SDL_GetTicks() - lastRender;
+  if (updateMs > 1000) {
+    updateMs %= 1000;
+    SDL_RendererInfo rInfo;
+    SDL_GetRendererInfo(renderer, &rInfo);
+    char dName[64];
+    sprintf(dName, "%s (backend: %s, fps: %.1f)", winName, rInfo.name, 1000.0f / fTime);
+    SDL_SetWindowTitle(win, dName);
+  }
+  int delay = 15 - (SDL_GetTicks() - lastRender);
   if (delay > 1) SDL_Delay(delay);
   lastRender = SDL_GetTicks();
   SDL_RenderPresent(renderer);
