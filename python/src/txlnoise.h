@@ -20,14 +20,14 @@ static PyMemberDef NoiseMembers[] = {
 void NoiseDealloc(Noise*);
 PyObject *NoiseNew(PyTypeObject*, PyObject*, PyObject*);
 int NoiseInit(Noise*, PyObject*, PyObject*);
-PyObject *NoiseFade(Noise*, PyObject*);
-PyObject *NoiseParams(Noise*, PyObject*);
-PyObject *NoisePlay(Noise*, PyObject*);
+PyObject *NoiseFade(Noise*, PyObject*, PyObject*);
+PyObject *NoiseParams(Noise*, PyObject*, PyObject*);
+PyObject *NoisePlay(Noise*, PyObject*, PyObject*);
 
 static PyMethodDef NoiseMethods[] = {
-  {"setVol", PyCFunction(NoiseFade), METH_VARARGS, "Set the volume of the sound and how long it plays"},
-  {"setParams", PyCFunction(NoiseParams), METH_VARARGS, "Set the cycle speed and bit depth of the sound"},
-  {"play", PyCFunction(NoisePlay), METH_VARARGS, "Plays the sound"},
+  {"setVol", PyCFunction(NoiseFade), METH_VARARGS | METH_KEYWORDS, "Set the volume of the sound and how long it plays"},
+  {"setParams", PyCFunction(NoiseParams), METH_VARARGS | METH_KEYWORDS, "Set the cycle speed and bit depth of the sound"},
+  {"play", PyCFunction(NoisePlay), METH_VARARGS | METH_KEYWORDS, "Plays the sound"},
   {NULL}
 };
 

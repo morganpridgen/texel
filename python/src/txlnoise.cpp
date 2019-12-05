@@ -20,28 +20,30 @@ int NoiseInit(Noise *self, PyObject *args, PyObject *kwds) {
   return 0;
 }
 
-PyObject *NoiseFade(Noise *self, PyObject *args) {
+PyObject *NoiseFade(Noise *self, PyObject *args, PyObject *kwds) {
   float vol, fade = 1.0f;
-  if (!PyArg_ParseTuple(args, "f|f", &vol, &fade)) return nullptr;
+  char *kwlist[] = {"vol", "fade", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "f|f", kwlist, &vol, &fade)) return nullptr;
   self->snd.vol = vol;
   self->snd.fade = vol / fade;
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *NoiseParams(Noise *self, PyObject *args) {
+PyObject *NoiseParams(Noise *self, PyObject *args, PyObject *kwds) {
   int cycle, bit = 0;
-  if (!PyArg_ParseTuple(args, "i|p", &cycle, &bit)) return nullptr;
+  char *kwlist[] = {"cycle", "bit", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "i|p", kwlist, &cycle, &bit)) return nullptr;
   self->snd.cycle = cycle;
   self->snd.bit = bit;
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *NoisePlay(Noise *self, PyObject *args) {
+PyObject *NoisePlay(Noise *self, PyObject *args, PyObject *kwds) {
   int channel = -1;
-  if (!PyArg_ParseTuple(args, "|i", &channel)) return nullptr;
-  
+  char *kwlist[] = {"channel", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|i", kwlist, &channel)) return nullptr;
   if (channel < 0) TXL_PlaySound(self->snd);
   else TXL_SetMChannel(self->snd, channel);
   Py_INCREF(Py_None);

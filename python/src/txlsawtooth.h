@@ -20,14 +20,14 @@ static PyMemberDef SawtoothMembers[] = {
 void SawtoothDealloc(Sawtooth*);
 PyObject *SawtoothNew(PyTypeObject*, PyObject*, PyObject*);
 int SawtoothInit(Sawtooth*, PyObject*, PyObject*);
-PyObject *SawtoothFreq(Sawtooth*, PyObject*);
-PyObject *SawtoothFade(Sawtooth*, PyObject*);
-PyObject *SawtoothPlay(Sawtooth*, PyObject*);
+PyObject *SawtoothFreq(Sawtooth*, PyObject*, PyObject*);
+PyObject *SawtoothFade(Sawtooth*, PyObject*, PyObject*);
+PyObject *SawtoothPlay(Sawtooth*, PyObject*, PyObject*);
 
 static PyMethodDef SawtoothMethods[] = {
-  {"setFreq", PyCFunction(SawtoothFreq), METH_VARARGS, "Set the frequency of the sound"},
-  {"setVol", PyCFunction(SawtoothFade), METH_VARARGS, "Set the volume of the sound and how long it plays"},
-  {"play", PyCFunction(SawtoothPlay), METH_VARARGS, "Plays the sound"},
+  {"setFreq", PyCFunction(SawtoothFreq), METH_VARARGS | METH_KEYWORDS, "Set the frequency of the sound"},
+  {"setVol", PyCFunction(SawtoothFade), METH_VARARGS | METH_KEYWORDS, "Set the volume of the sound and how long it plays"},
+  {"play", PyCFunction(SawtoothPlay), METH_VARARGS | METH_KEYWORDS, "Plays the sound"},
   {NULL}
 };
 

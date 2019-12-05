@@ -1,9 +1,10 @@
 #include "txltexture.h"
 #include "txlcolor.h"
 
-PyObject *loadFont(PyObject *self, PyObject *args) {
+PyObject *loadFont(PyObject *self, PyObject *args, PyObject *kwds) {
   char *path;
-  if (!PyArg_ParseTuple(args, "s", &path)) return nullptr;
+  char *kwlist[] = {"path", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist, &path)) return nullptr;
   if (!TXL_LoadFont(path)) {
     PyErr_SetString(PyExc_OSError, "Error loading font");
     return nullptr;
@@ -12,7 +13,7 @@ PyObject *loadFont(PyObject *self, PyObject *args) {
   return Py_None;
 }
 
-PyObject *unloadFont(PyObject *self, PyObject *args) {
+PyObject *unloadFont(PyObject *self, PyObject *args, PyObject *kwds) {
   TXL_UnloadFont();
   Py_INCREF(Py_None);
   return Py_None;
@@ -34,7 +35,8 @@ int TextureInit(Texture *self, PyObject *args, PyObject *kwds) {
   char *path;
   int isText = 0;
   int w = -1, h = -1;
-  if (!PyArg_ParseTuple(args, "s|pii", &path, &isText, &w, &h)) return -1;
+  char *kwlist[] = {"path", "w", "h", "isText", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "s|ii$p", kwlist, &path, &w, &h, &isText)) return -1;
   if (!isText) {
     if (!self->tex.load(path, w, h)) {
       PyErr_SetString(PyExc_OSError, "Error loading texture");
@@ -50,33 +52,37 @@ int TextureInit(Texture *self, PyObject *args, PyObject *kwds) {
   return 0;
 }
 
-PyObject *TextureRender(Texture *self, PyObject *args) {
+PyObject *TextureRender(Texture *self, PyObject *args, PyObject *kwds) {
   float x, y, w = 1.0f, h = 1.0f, r = 0.0f;
-  if (!PyArg_ParseTuple(args, "ff|fff", &x, &y, &w, &h, &r)) return nullptr;
-  self->tex.render(x, y, w, h, r * (180 / 3.141593f));
+  char *kwlist[] = {"x", "y", "w", "h", "r", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "ff|fff", kwlist, &x, &y, &w, &h, &r)) return nullptr;
+  self->tex.render(x, y, w, h, r * (180.0f / 3.141593f));
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *TextureSetClip(Texture *self, PyObject *args) {
+PyObject *TextureSetClip(Texture *self, PyObject *args, PyObject *kwds) {
   int x, y, w, h;
-  if (!PyArg_ParseTuple(args, "iiii", &x, &y, &w, &h)) return nullptr;
+  char *kwlist[] = {"x", "y", "w", "h", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "iiii", kwlist, &x, &y, &w, &h)) return nullptr;
   self->tex.setClip(x, x + w, y, y + h);
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *TextureSetColorMod(Texture *self, PyObject *args) {
+PyObject *TextureSetColorMod(Texture *self, PyObject *args, PyObject *kwds) {
   Color *color;
-  if (!PyArg_ParseTuple(args, "O!", &ColorType, &color)) return nullptr;
+  char *kwlist[] = {"color", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O!", kwlist, &ColorType, &color)) return nullptr;
   self->tex.setColorMod(color->r, color->g, color->b, color->a);
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *TextureSetAlphaMod(Texture *self, PyObject *args) {
+PyObject *TextureSetAlphaMod(Texture *self, PyObject *args, PyObject *kwds) {
   float a = 1.0f;
-  if (!PyArg_ParseTuple(args, "|f", &a)) return nullptr;
+  char *kwlist[] = {"a", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|f", kwlist, &a)) return nullptr;
   self->tex.setColorMod(a);
   Py_INCREF(Py_None);
   return Py_None;

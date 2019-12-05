@@ -20,12 +20,12 @@ static PyMemberDef DisplayMembers[] = {
 void DisplayDealloc(Display*);
 PyObject *DisplayNew(PyTypeObject*, PyObject*, PyObject*);
 int DisplayInit(Display*, PyObject*, PyObject*);
-PyObject *DisplayRefresh(Display*, PyObject*);
-PyObject *DisplaySetFill(Display*, PyObject*);
+PyObject *DisplayRefresh(Display*, PyObject*, PyObject*);
+PyObject *DisplaySetFill(Display*, PyObject*, PyObject*);
 
 static PyMethodDef DisplayMethods[] = {
   {"refresh", PyCFunction(DisplayRefresh), METH_NOARGS, "Redraw the window"},
-  {"setFill", PyCFunction(DisplaySetFill), METH_VARARGS, "Set the redraw color"},
+  {"setFill", PyCFunction(DisplaySetFill), METH_VARARGS | METH_KEYWORDS, "Set the redraw color"},
   {NULL}
 };
 

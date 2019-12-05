@@ -4,7 +4,7 @@ from math import *
 texel.init()
 d = texel.Display("test")
 texel.loadFont("font.png")
-text = texel.Texture("Hello!", 1)
+text = texel.Texture("Hello!", isText=True)
 
 tX, tY, tW, tH, tR = 320, 180, 1, 1, 0
 t = 0

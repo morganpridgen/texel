@@ -35,30 +35,30 @@ static PyMemberDef ControllerMembers[] = {
 void ControllerDealloc(Controller*);
 PyObject *ControllerNew(PyTypeObject*, PyObject*, PyObject*);
 int ControllerInit(Controller*, PyObject*, PyObject*);
-PyObject *ControllerUpdate(Controller*, PyObject*);
-PyObject *ControllerIsKeyboard(Controller*, PyObject*);
-PyObject *ControllerPress(Controller*, PyObject*);
-PyObject *ControllerClick(Controller*, PyObject*);
-PyObject *ControllerRelease(Controller*, PyObject*);
-PyObject *ControllerJoyX(Controller*, PyObject*);
-PyObject *ControllerJoyY(Controller*, PyObject*);
-PyObject *ControllerMouseX(Controller*, PyObject*);
-PyObject *ControllerMouseY(Controller*, PyObject*);
-PyObject *ControllerId(Controller*, PyObject*);
-PyObject *ControllerRumble(Controller*, PyObject*);
+PyObject *ControllerUpdate(Controller*, PyObject*, PyObject*);
+PyObject *ControllerIsKeyboard(Controller*, PyObject*, PyObject*);
+PyObject *ControllerPress(Controller*, PyObject*, PyObject*);
+PyObject *ControllerClick(Controller*, PyObject*, PyObject*);
+PyObject *ControllerRelease(Controller*, PyObject*, PyObject*);
+PyObject *ControllerJoyX(Controller*, PyObject*, PyObject*);
+PyObject *ControllerJoyY(Controller*, PyObject*, PyObject*);
+PyObject *ControllerMouseX(Controller*, PyObject*, PyObject*);
+PyObject *ControllerMouseY(Controller*, PyObject*, PyObject*);
+PyObject *ControllerId(Controller*, PyObject*, PyObject*);
+PyObject *ControllerRumble(Controller*, PyObject*, PyObject*);
 
 static PyMethodDef ControllerMethods[] = {
   {"update", PyCFunction(ControllerUpdate), METH_NOARGS, "Update the controller's state"},
   {"isKeyboard", PyCFunction(ControllerIsKeyboard), METH_NOARGS, "Check if the controller is a keyboard"},
-  {"press", PyCFunction(ControllerPress), METH_VARARGS, "Checks if a button is pressed"},
-  {"click", PyCFunction(ControllerClick), METH_VARARGS, "Checks if a button was just pressed"},
-  {"release", PyCFunction(ControllerRelease), METH_VARARGS, "Cecks if a button was just released"},
+  {"press", PyCFunction(ControllerPress), METH_VARARGS | METH_KEYWORDS, "Checks if a button is pressed"},
+  {"click", PyCFunction(ControllerClick), METH_VARARGS | METH_KEYWORDS, "Checks if a button was just pressed"},
+  {"release", PyCFunction(ControllerRelease), METH_VARARGS | METH_KEYWORDS, "Cecks if a button was just released"},
   {"joyX", PyCFunction(ControllerJoyX), METH_NOARGS, "Get the joystick's X position"},
   {"joyY", PyCFunction(ControllerJoyY), METH_NOARGS, "Get the joystick's Y position"},
   {"mouseX", PyCFunction(ControllerMouseX), METH_NOARGS, "Get the mouse's X position"},
   {"mouseY", PyCFunction(ControllerMouseY), METH_NOARGS, "Get the mouse's Y position"},
   {"id", PyCFunction(ControllerId), METH_NOARGS, "Get the id of the controller"},
-  {"rumble", PyCFunction(ControllerRumble), METH_VARARGS, "Make the controller vibrate if possible"},
+  {"rumble", PyCFunction(ControllerRumble), METH_VARARGS | METH_KEYWORDS, "Make the controller vibrate if possible"},
   {NULL}
 };
 

@@ -3,7 +3,7 @@ from math import *
 
 texel.init()
 d = texel.Display("test")
-arrow = texel.Texture("arrow.png", 0, 16, 16)
+arrow = texel.Texture("arrow.png", 16, 16)
 ctrl = texel.Controller()
 x, y, r = 320, 180, 0
 

@@ -22,65 +22,69 @@ int ControllerInit(Controller *self, PyObject *args, PyObject *kwds) {
   return 0;
 }
 
-PyObject *ControllerUpdate(Controller *self, PyObject *args) {
+PyObject *ControllerUpdate(Controller *self, PyObject *args, PyObject *kwds) {
   TXL_ManageController(self->ctrl);
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *ControllerIsKeyboard(Controller *self, PyObject *args) {
+PyObject *ControllerIsKeyboard(Controller *self, PyObject *args, PyObject *kwds) {
   PyObject *ok = self->ctrl->isKeyboard() ? Py_True : Py_False;
   Py_INCREF(ok);
   return ok;
 }
 
-PyObject *ControllerPress(Controller *self, PyObject *args) {
+PyObject *ControllerPress(Controller *self, PyObject *args, PyObject *kwds) {
   int button = 0;
-  if (!PyArg_ParseTuple(args, "i", &button)) return nullptr;
+  char *kwlist[] = {"b", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &button)) return nullptr;
   PyObject *ok = self->ctrl->buttonPress((TXL_CtrlButton)button) ? Py_True : Py_False;
   Py_INCREF(ok);
   return ok;
 }
 
-PyObject *ControllerClick(Controller *self, PyObject *args) {
+PyObject *ControllerClick(Controller *self, PyObject *args, PyObject *kwds) {
   int button = 0;
-  if (!PyArg_ParseTuple(args, "i", &button)) return nullptr;
+  char *kwlist[] = {"b", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &button)) return nullptr;
   PyObject *ok = self->ctrl->buttonClick((TXL_CtrlButton)button) ? Py_True : Py_False;
   Py_INCREF(ok);
   return ok;
 }
 
-PyObject *ControllerRelease(Controller *self, PyObject *args) {
+PyObject *ControllerRelease(Controller *self, PyObject *args, PyObject *kwds) {
   int button = 0;
-  if (!PyArg_ParseTuple(args, "i", &button)) return nullptr;
+  char *kwlist[] = {"b", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &button)) return nullptr;
   PyObject *ok = self->ctrl->buttonRelease((TXL_CtrlButton)button) ? Py_True : Py_False;
   Py_INCREF(ok);
   return ok;
 }
 
-PyObject *ControllerJoyX(Controller *self, PyObject *args) {
+PyObject *ControllerJoyX(Controller *self, PyObject *args, PyObject *kwds) {
   return Py_BuildValue("f", self->ctrl->leftJoyX());
 }
 
-PyObject *ControllerJoyY(Controller *self, PyObject *args) {
+PyObject *ControllerJoyY(Controller *self, PyObject *args, PyObject *kwds) {
   return Py_BuildValue("f", self->ctrl->leftJoyY());
 }
 
-PyObject *ControllerMouseX(Controller *self, PyObject *args) {
+PyObject *ControllerMouseX(Controller *self, PyObject *args, PyObject *kwds) {
   return Py_BuildValue("f", self->ctrl->mouseX());
 }
 
-PyObject *ControllerMouseY(Controller *self, PyObject *args) {
+PyObject *ControllerMouseY(Controller *self, PyObject *args, PyObject *kwds) {
   return Py_BuildValue("f", self->ctrl->mouseY());
 }
 
-PyObject *ControllerId(Controller *self, PyObject *args) {
+PyObject *ControllerId(Controller *self, PyObject *args, PyObject *kwds) {
   return Py_BuildValue("i", self->ctrl->getId());
 }
 
-PyObject *ControllerRumble(Controller *self, PyObject *args) {
+PyObject *ControllerRumble(Controller *self, PyObject *args, PyObject *kwds) {
   float power, time;
-  if (!PyArg_ParseTuple(args, "ff", &power, &time)) return nullptr;
+  char *kwlist[] = {"power", "time", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "ff", kwlist, &power, &time)) return nullptr;
   self->ctrl->rumble(power, int(time * 1000));
   Py_INCREF(Py_None);
   return Py_None;

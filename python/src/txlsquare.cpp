@@ -19,26 +19,29 @@ int SquareInit(Square *self, PyObject *args, PyObject *kwds) {
   return 0;
 }
 
-PyObject *SquareFreq(Square *self, PyObject *args) {
+PyObject *SquareFreq(Square *self, PyObject *args, PyObject *kwds) {
   float freq;
-  if (!PyArg_ParseTuple(args, "f", &freq)) return nullptr;
+  char *kwlist[] = {"freq", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "f", kwlist, &freq)) return nullptr;
   self->snd.freq = freq;
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *SquareFade(Square *self, PyObject *args) {
+PyObject *SquareFade(Square *self, PyObject *args, PyObject *kwds) {
   float vol, fade = 1.0f;
-  if (!PyArg_ParseTuple(args, "f|f", &vol, &fade)) return nullptr;
+  char *kwlist[] = {"vol", "fade", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "f|f", kwlist, &vol, &fade)) return nullptr;
   self->snd.vol = vol;
   self->snd.fade = vol / fade;
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *SquareDuty(Square *self, PyObject *args) {
+PyObject *SquareDuty(Square *self, PyObject *args, PyObject *kwds) {
   int duty;
-  if (!PyArg_ParseTuple(args, "i", &duty)) return nullptr;
+  char *kwlist[] = {"duty", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "i", kwlist, &duty)) return nullptr;
   if (duty % 4 != duty) {
     PyErr_SetString(PyExc_ValueError, "Duty cycle must be 0, 1, 2, or 3");
     return nullptr;
@@ -48,10 +51,10 @@ PyObject *SquareDuty(Square *self, PyObject *args) {
   return Py_None;
 }
 
-PyObject *SquarePlay(Square *self, PyObject *args) {
+PyObject *SquarePlay(Square *self, PyObject *args, PyObject *kwds) {
   int channel = -1;
-  if (!PyArg_ParseTuple(args, "|i", &channel)) return nullptr;
-  
+  char *kwlist[] = {"channel", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|i", kwlist, &channel)) return nullptr;
   if (channel < 0) TXL_PlaySound(self->snd);
   else TXL_SetMChannel(self->snd, channel);
   Py_INCREF(Py_None);

@@ -13,7 +13,8 @@ PyObject *ColorNew(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 
 int ColorInit(Color *self, PyObject *args, PyObject *kwds) {
   self->r = 0.0f, self ->g = 0.0f, self->b = 0.0f, self->a = 1.0f;
-  if (!PyArg_ParseTuple(args, "fff|f", &(self->r), &(self->g), &(self->b), &(self->a))) return -1;
+  char *kwlist[] = {"r", "g", "b", "a", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "fff|f", kwlist, &(self->r), &(self->g), &(self->b), &(self->a))) return -1;
   return 0;
 }
 

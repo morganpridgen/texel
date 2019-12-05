@@ -8,12 +8,12 @@
 
 #include <TEXEL/texel.h>
 
-PyObject *loadFont(PyObject *, PyObject *);
-PyObject *unloadFont(PyObject *, PyObject *);
+PyObject *loadFont(PyObject*, PyObject*, PyObject*);
+PyObject *unloadFont(PyObject*, PyObject*, PyObject*);
 
 #define TEXTUREDEC \
-  {"loadFont", loadFont, METH_VARARGS, "Loads a font"},\
-  {"unloadFont", unloadFont, METH_NOARGS, "Unoads the font"}
+  {"loadFont", (PyCFunction)(void(*)(void))loadFont, METH_VARARGS | METH_KEYWORDS, "Loads a font"},\
+  {"unloadFont", (PyCFunction)(void(*)(void))unloadFont, METH_NOARGS, "Unoads the font"}
 
 struct Texture {
   PyObject_HEAD
@@ -27,16 +27,16 @@ static PyMemberDef TextureMembers[] = {
 void TextureDealloc(Texture*);
 PyObject *TextureNew(PyTypeObject*, PyObject*, PyObject*);
 int TextureInit(Texture*, PyObject*, PyObject*);
-PyObject *TextureRender(Texture*, PyObject*);
-PyObject *TextureSetClip(Texture*, PyObject*);
-PyObject *TextureSetColorMod(Texture*, PyObject*);
-PyObject *TextureSetAlphaMod(Texture*, PyObject*);
+PyObject *TextureRender(Texture*, PyObject*, PyObject*);
+PyObject *TextureSetClip(Texture*, PyObject*, PyObject*);
+PyObject *TextureSetColorMod(Texture*, PyObject*, PyObject*);
+PyObject *TextureSetAlphaMod(Texture*, PyObject*, PyObject*);
 
 static PyMethodDef TextureMethods[] = {
-  {"render", PyCFunction(TextureRender), METH_VARARGS, "Draw the texture"},
-  {"setClip", PyCFunction(TextureSetClip), METH_VARARGS, "Set the area of the function that gets rendered"},
-  {"setColorMod", PyCFunction(TextureSetColorMod), METH_VARARGS, "Set the color mod of the texture"},
-  {"setAlphaMod", PyCFunction(TextureSetAlphaMod), METH_VARARGS, "Set the alpha mod of the texture"},
+  {"render", PyCFunction(TextureRender), METH_VARARGS | METH_KEYWORDS, "Draw the texture"},
+  {"setClip", PyCFunction(TextureSetClip), METH_VARARGS | METH_KEYWORDS, "Set the area of the function that gets rendered"},
+  {"setColorMod", PyCFunction(TextureSetColorMod), METH_VARARGS | METH_KEYWORDS, "Set the color mod of the texture"},
+  {"setAlphaMod", PyCFunction(TextureSetAlphaMod), METH_VARARGS | METH_KEYWORDS, "Set the alpha mod of the texture"},
   {NULL}
 };
 

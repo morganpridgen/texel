@@ -3,7 +3,7 @@ from math import *
 
 texel.init()
 d = texel.Display("test")
-box = texel.Texture("box.png", 0, 32, 8)
+box = texel.Texture("box.png", 32, 8)
 
 bX, bY, bW, bH, bR = 320, 180, 1, 1, 0
 t = 0
@@ -12,8 +12,8 @@ while d.refresh():
   t += 1
   bR = t / 64
   if t > 120:
-    bX = 320 + 32 * cos(t * (0.0174) / 2)
-    bY = 180 + 32 * sin(t * (0.0174) / 2)
+    bX = 320 + 64 * cos(t * (0.0174) / 2)
+    bY = 180 + 64 * sin(t * (0.0174) / 2)
   if t > 240:
     bW = 1 + cos(t * (0.0174)) / 2
     bH = 1 + sin(t * (0.0174)) / 2

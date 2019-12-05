@@ -18,27 +18,29 @@ int TriangleInit(Triangle *self, PyObject *args, PyObject *kwds) {
   return 0;
 }
 
-PyObject *TriangleFreq(Triangle *self, PyObject *args) {
+PyObject *TriangleFreq(Triangle *self, PyObject *args, PyObject *kwds) {
   float freq;
-  if (!PyArg_ParseTuple(args, "f", &freq)) return nullptr;
+  char *kwlist[] = {"freq", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "f", kwlist, &freq)) return nullptr;
   self->snd.freq = freq;
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *TriangleFade(Triangle *self, PyObject *args) {
+PyObject *TriangleFade(Triangle *self, PyObject *args, PyObject *kwds) {
   float vol, fade = 1.0f;
-  if (!PyArg_ParseTuple(args, "f|f", &vol, &fade)) return nullptr;
+  char *kwlist[] = {"vol", "fade", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "f|f", kwlist, &vol, &fade)) return nullptr;
   self->snd.vol = vol;
   self->snd.fade = vol / fade;
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-PyObject *TrianglePlay(Triangle *self, PyObject *args) {
+PyObject *TrianglePlay(Triangle *self, PyObject *args, PyObject *kwds) {
   int channel = -1;
-  if (!PyArg_ParseTuple(args, "|i", &channel)) return nullptr;
-  
+  char *kwlist[] = {"channel", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "|i", kwlist, &channel)) return nullptr;
   if (channel < 0) TXL_PlaySound(self->snd);
   else TXL_SetMChannel(self->snd, channel);
   Py_INCREF(Py_None);

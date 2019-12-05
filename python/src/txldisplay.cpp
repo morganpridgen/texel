@@ -15,7 +15,8 @@ PyObject *DisplayNew(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 
 int DisplayInit(Display *self, PyObject *args, PyObject *kwds) {
   char *name;
-  if (!PyArg_ParseTuple(args, "s", &name)) return -1;
+  char *kwlist[] = {"name", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "s", kwlist, &name)) return -1;
   if (!self->disp.init(name)) {
     PyErr_SetString(PyExc_OSError, "Error creating window");
     return -1;
@@ -23,16 +24,17 @@ int DisplayInit(Display *self, PyObject *args, PyObject *kwds) {
   return 0;
 }
 
-PyObject *DisplayRefresh(Display *self, PyObject *args) {
+PyObject *DisplayRefresh(Display *self, PyObject *args, PyObject *kwds) {
   self->disp.refresh();
   PyObject *ok = TXL_Events(&(self->disp)) ? Py_True : Py_False;
   Py_INCREF(ok);
   return ok;
 }
 
-PyObject *DisplaySetFill(Display *self, PyObject *args) {
+PyObject *DisplaySetFill(Display *self, PyObject *args, PyObject *kwds) {
   Color *color;
-  if (!PyArg_ParseTuple(args, "O!", &ColorType, &color)) return nullptr;
+  char *kwlist[] = {"color", NULL};
+  if (!PyArg_ParseTupleAndKeywords(args, kwds, "O!", kwlist, &ColorType, &color)) return nullptr;
   if (color->r < 0.0f || color->r > 1.0f || color->g < 0.0f || color->g > 1.0f || color->b < 0.0f || color->b > 1.0f) {
     PyErr_SetString(PyExc_ValueError, "Color values must be between 0 and 1");
     return nullptr;
