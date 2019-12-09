@@ -19,6 +19,7 @@ bool TXL_Init() {
   }
   
   TXL_InitSound();
+  TXL_InitEndian();
   return 1;
 }
 

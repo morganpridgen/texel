@@ -16,6 +16,10 @@ char baseDir[128];
 char savePath[128];
 char dataPath[128];
 
+char endian = 0;
+
+void flipEndian(void*, int);
+
 void TXL_InitPaths(const char *saveName) {
   char tmpPath[128];
   int i = 0;
@@ -86,6 +90,28 @@ char *TXL_SavePath(const char *file) {
   return out;
 }
 
+void TXL_InitEndian() {
+  int num = 1;
+  endian = (((char *)&num)[0] == 0) ? 'B' : 'L';
+  printf("System is %s endian.\n", endian == 'B' ? "bin" : "little");
+}
+
+void flipEndian(void *data, int size) {
+  if (endian == 'L') {
+    /*char *bytes = new char[size];
+    memcpy(bytes, data, size);
+    for (int i = 0; i < size; i++) ((char *)data)[i] = bytes[size - i - 1];
+    delete [] bytes;*/
+    for (int i = 0; i < size / 2; i++) {
+      ((char *)data)[i] ^= ((char *)data)[size - i - 1];
+      ((char *)data)[size - i - 1] ^= ((char *)data)[i];
+      ((char *)data)[i] ^= ((char *)data)[size - i - 1];
+    }
+  }
+}
+
+
+
 bool TXL_File::init(const char *path, const char mode) {
   close();
   char newMode[3];
@@ -95,11 +121,16 @@ bool TXL_File::init(const char *path, const char mode) {
 }
 
 bool TXL_File::read(void *data, const int len) {
-  return fread(data, len, 1, file) == 1;
+  bool ok =  fread(data, len, 1, file) == 1;
+  flipEndian(data, len);
+  return ok;
 }
 
 bool TXL_File::write(void *data, const int len) {
-  return fwrite(data, len, 1, file) == 1;
+  flipEndian(data, len);
+  bool ok = fwrite(data, len, 1, file) == 1;
+  flipEndian(data, len);
+  return ok;
 }
 
 void TXL_File::close() {
