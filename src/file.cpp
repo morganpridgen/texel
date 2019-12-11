@@ -12,23 +12,23 @@
   #include <windows.h>
 #endif
 
-char baseDir[128];
-char savePath[128];
-char dataPath[128];
+char baseDir[256];
+char savePath[256];
+char dataPath[256];
 
 char endian = 0;
 
 void flipEndian(void*, int);
 
 void TXL_InitPaths(const char *saveName) {
-  char tmpPath[128];
+  char tmpPath[256];
   int i = 0;
   #if OS == linux
-    tmpPath[readlink("/proc/self/exe", tmpPath, 128)] = 0;
+    tmpPath[readlink("/proc/self/exe", tmpPath, 256)] = 0;
     realpath(tmpPath, baseDir);
   #elif OS == windows
-    tmpPath[GetModuleFileName(NULL, tmpPath, 128)] = 0;
-    GetFullPathName(tmpPath, 128, baseDir, NULL);
+    tmpPath[GetModuleFileName(NULL, tmpPath, 256)] = 0;
+    GetFullPathName(tmpPath, 256, baseDir, NULL);
   #endif
   i = 0;
   while (1) {
@@ -46,7 +46,7 @@ void TXL_InitPaths(const char *saveName) {
     baseDir[i] = 0;
   }
   sprintf(dataPath, "%s/res", baseDir);
-  memset(tmpPath, 0, 128);
+  memset(tmpPath, 0, 256);
   #if OS == linux
     char *xdgPath = getenv("XDG_DATA_HOME");
     if (xdgPath && strlen(xdgPath) > 0) {
@@ -77,15 +77,15 @@ void TXL_InitPaths(const char *saveName) {
 }
 
 char *TXL_DataPath(const char *file) {
-  static char out[64];
-  memset(out, 0, 64);
+  static char out[256];
+  memset(out, 0, 256);
   sprintf(out, "%s/%s", dataPath, file);
   return out;
 }
 
 char *TXL_SavePath(const char *file) {
-  static char out[64];
-  memset(out, 0, 64);
+  static char out[256];
+  memset(out, 0, 256);
   sprintf(out, "%s/%s", savePath, file);
   return out;
 }
@@ -98,10 +98,6 @@ void TXL_InitEndian() {
 
 void flipEndian(void *data, int size) {
   if (endian == 'L') {
-    /*char *bytes = new char[size];
-    memcpy(bytes, data, size);
-    for (int i = 0; i < size; i++) ((char *)data)[i] = bytes[size - i - 1];
-    delete [] bytes;*/
     for (int i = 0; i < size / 2; i++) {
       ((char *)data)[i] ^= ((char *)data)[size - i - 1];
       ((char *)data)[size - i - 1] ^= ((char *)data)[i];
@@ -136,4 +132,53 @@ bool TXL_File::write(void *data, const int len) {
 void TXL_File::close() {
   if (file) fclose(file);
   file = nullptr;
+}
+
+
+
+bool TXL_IsFile(const char *path) {
+  #if OS == linux
+    struct stat info;
+    return stat(path, &info) == 0 && info.st_mode & S_IFREG;
+  #elif OS == windows
+    DWORD stat = GetFileAttributes(path);
+    return stat == INVALID_FILE_ATTRIBUTES && GetLastError() != ERROR_FILE_NOT_FOUND && stat & FILE_ATTRIBUTE_NORMAL;
+  #endif
+}
+
+bool TXL_IsDir(const char *path) {
+  #if OS == linux
+    struct stat info;
+    return stat(path, &info) == 0 && info.st_mode & S_IFDIR;
+  #elif OS == windows
+    DWORD stat = GetFileAttributes(path);
+    return stat == INVALID_FILE_ATTRIBUTES && GetLastError() != ERROR_FILE_NOT_FOUND && stat & FILE_ATTRIBUTE_DIRECTORY;
+  #endif
+}
+
+bool TXL_CreateDir(const char *path) {
+  if (TXL_IsFile(path) || TXL_IsDir(path)) return 0;
+  #if OS == linux
+    mkdir(path, 0700);
+  #elif OS == windows
+    CreateDirectory(path, NULL);
+  #endif
+}
+
+bool TXL_RemoveFile(const char *path) {
+  if (!TXL_IsFile(path)) return 0;
+  #if OS == linux
+    return unlink(path) == 0;
+  #elif OS == windows
+    return DeleteFile(path);
+  #endif
+}
+
+bool TXL_RemoveDir(const char *path) {
+  if (!TXL_IsDir(path)) return 0;
+  #if OS == linux
+    return rmdir(path) == 0;
+  #elif OS == windows
+    return DeleteDirectory(path);
+  #endif
 }

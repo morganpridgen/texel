@@ -15,10 +15,14 @@ class TEXELFunc TXL_File {
     TXL_File() {file = nullptr;}
     bool init(const char*, const char);
     bool read(void*, const int);
-    bool read(void *data) {return read(data, sizeof(data));}
     bool write(void*, const int);
-    bool write(void *data) {return write(data, sizeof(data));}
     void close();
 };
+
+bool TEXELFunc TXL_IsFile(const char*);
+bool TEXELFunc TXL_IsDir(const char*);
+bool TEXELFunc TXL_CreateDir(const char*);
+bool TEXELFunc TXL_RemoveFile(const char*);
+bool TEXELFunc TXL_RemoveDir(const char*);
 
 #endif
