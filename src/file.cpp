@@ -7,6 +7,9 @@
   #include <unistd.h>
   #include <sys/types.h>
   #include <sys/stat.h>
+  #include <sys/socket.h>
+  #include <arpa/inet.h>
+  #include <fcntl.h>
 #endif
 #if OS == windows
   #include <windows.h>
@@ -64,7 +67,7 @@ void TXL_InitPaths(const char *saveName) {
     strcpy(tmpPath, getenv("APPDATA"));
   #endif
   sprintf(savePath, "%s/%s", tmpPath, saveName);
-  printf("Saving data to %s\n", savePath);
+  printf("saving data to \"%s\"\n", savePath);
   #if OS == linux
     struct stat info;
     if (stat(savePath, &info) == 0 && info.st_mode & S_IFDIR) return;
@@ -93,7 +96,7 @@ char *TXL_SavePath(const char *file) {
 void TXL_InitEndian() {
   int num = 1;
   endian = (((char *)&num)[0] == 0) ? 'B' : 'L';
-  printf("System is %s endian.\n", endian == 'B' ? "bin" : "little");
+  printf("system is %s endian\n", endian == 'B' ? "big" : "little");
 }
 
 void flipEndian(void *data, int size) {
@@ -116,17 +119,17 @@ bool TXL_File::init(const char *path, const char mode) {
   return file != NULL;
 }
 
-bool TXL_File::read(void *data, const int len) {
-  bool ok =  fread(data, len, 1, file) == 1;
+int TXL_File::read(void *data, const int len) {
+  int size = fread(data, len, 1, file);
   flipEndian(data, len);
-  return ok;
+  return size;
 }
 
-bool TXL_File::write(void *data, const int len) {
+int TXL_File::write(void *data, const int len) {
   flipEndian(data, len);
-  bool ok = fwrite(data, len, 1, file) == 1;
+  int size = fwrite(data, len, 1, file);
   flipEndian(data, len);
-  return ok;
+  return size;
 }
 
 void TXL_File::close() {
@@ -163,6 +166,7 @@ bool TXL_CreateDir(const char *path) {
   #elif OS == windows
     CreateDirectory(path, NULL);
   #endif
+  return 1;
 }
 
 bool TXL_RemoveFile(const char *path) {
@@ -179,6 +183,86 @@ bool TXL_RemoveDir(const char *path) {
   #if OS == linux
     return rmdir(path) == 0;
   #elif OS == windows
-    return DeleteDirectory(path);
+    return RemoveDirectory(path);
+  #endif
+}
+
+
+bool TXL_Socket::init(const char *addr) {
+  char hostname[64];
+  unsigned short port = 80;
+  for (int i = 0; i < strlen(addr); i++) {
+    if (addr[i] == ':') {
+      hostname[i] = 0;
+      port = atoi(addr + i + 1);
+      break;
+    }
+    hostname[i] = addr[i];
+  }
+  flipEndian(&port, sizeof(port));
+  s = socket(AF_INET, SOCK_STREAM, 0);
+  if (s < 0) {
+    printf("error getting socket\n");
+    return 0;
+  }
+  memset(&serverAddr, 0, sizeof(serverAddr));
+  serverAddr.sin_family = AF_INET;
+  serverAddr.sin_addr.s_addr = inet_addr(hostname);
+  serverAddr.sin_port = port;
+  if (connect(s, (sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
+    printf("error connecting to server\n");
+    return 0;
+  }
+  return 1;
+}
+
+#if OS == linux
+  #define RWType void*
+#elif OS == windows
+  #define RWType char*
+#endif
+int TXL_Socket::read(void *data, const int size) {
+  return recv(s, (RWType)data, size, 0);
+}
+
+int TXL_Socket::write(void *data, const int size) {
+  return send(s, (RWType)data, size, 0);
+}
+
+bool TXL_Socket::hasData() {
+  char tmp;
+  #if OS == linux
+    return recv(s, &tmp, sizeof(tmp), MSG_DONTWAIT | MSG_PEEK) > 0;
+  #elif OS == windows
+    unsigned long mode = 0;
+    ioctlsocket(s, FIONBIO, &mode);
+    int bytes = recv(s, &tmp, sizeof(tmp), MSG_PEEK);
+    mode = 1;
+    ioctlsocket(s, FIONBIO, &mode);
+    return bytes > 0;
+  #endif
+}
+
+void TXL_Socket::end() {
+  #if OS == linux
+    shutdown(s, SHUT_RDWR);
+    close(s);
+  #elif OS == windows
+    shutdown(s, SD_BOTH);
+    closesocket(s);
+  #endif
+}
+
+bool TXL_InitSocket() {
+  #if OS == windows
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 0), &wsaData) != 0) return 0;
+  #endif
+  return 1;
+}
+
+void TXL_EndSocket() {
+  #if OS == windows
+    WSACleanup();
   #endif
 }

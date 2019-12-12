@@ -6,6 +6,6 @@
 
 bool TEXELFunc TXL_LoadFont(const char*);
 void TEXELFunc TXL_UnloadFont();
-TXL_Texture TEXELFunc *TXL_RenderText(const char*, float, float, float);
+void TEXELFunc *TXL_RenderText(TXL_Texture*, const char*, float, float, float);
 
 #endif

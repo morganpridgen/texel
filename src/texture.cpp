@@ -30,7 +30,7 @@ bool TXL_Texture::load(SDL_Surface *surf, int w, int h) {
   
   texture = SDL_CreateTextureFromSurface(gDisp->getRenderer(), surf);
   if (!texture) {
-    printf("Error creating texture.\n");
+    printf("error creating texture.\n");
     return 0;
   }
   SDL_FreeSurface(surf);
@@ -41,7 +41,7 @@ bool TXL_Texture::load(const char path[], int w, int h) {
   free();
   SDL_Surface *surf = IMG_Load(path);
   if (!surf) {
-    printf("Error loading texture %s.\n", path);
+    printf("error loading texture %s (%s)\n", path, IMG_GetError());
     return 0;
   }
   return load(surf, w, h);

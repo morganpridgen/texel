@@ -26,6 +26,6 @@ for i in files:
     print("Compiling %s.cpp" % i)
     if os.system("g++ -DTEXELDLL -fPIC -std=c++11 -c ../src/%s.cpp -I../include -O2 -ggdb -o ./%s/txl-%s.o" % (i, compDir, i)): sys.exit(1)
 if sys.platform.startswith("linux"): linkCmd = "ar rcs %s/libtexel.a %s/txl-*.o && g++ -shared %s/txl-*.o -Llib/linux -lSDL2 -lSDL2_image -o %s/libtexel.so" % (compDir, compDir, compDir, compDir)
-elif sys.platform.startswith("win32"): linkCmd = "g++ -shared %s\\txl-*.o -LC:\\MinGW\lib -lmingw32 -lSDL2 -lSDL2_image -o %s\\libtexel.dll -Wl,--out-implib,%s\\libtexel.a" % (compDir, compDir, compDir)
+elif sys.platform.startswith("win32"): linkCmd = "g++ -shared %s\\txl-*.o -LC:\\MinGW\lib -lmingw32 -lSDL2 -lSDL2_image -lws2_32 -o %s\\libtexel.dll -Wl,--out-implib,%s\\libtexel.a" % (compDir, compDir, compDir)
 os.system(linkCmd)
 os.chdir("../")

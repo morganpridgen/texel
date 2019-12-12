@@ -20,7 +20,7 @@ bool TXL_Display::init(const char name[]) {
   info.fullscreen = 0;
   win = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, info.rX, info.rY, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
   if (win == nullptr) {
-    printf("Error creating window. %s\n", SDL_GetError());
+    printf("error creating window (%s)\n", SDL_GetError());
     return 0;
   }
   SDL_Surface *icon = IMG_Load(TXL_DataPath("icon.png"));
@@ -30,10 +30,10 @@ bool TXL_Display::init(const char name[]) {
   
   renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
   if (!renderer) {
-    printf("Error creating rendering context. Checking for one automatically created with the window.");
+    printf("error creating rendering context (%s)\n", SDL_GetError());
     renderer = SDL_GetRenderer(win);
     if (!renderer) {
-      printf("Error getting rendering context. (%s)\n", SDL_GetError());
+      printf("error getting rendering context (%s)\n", SDL_GetError());
       return 0;
     }
   }

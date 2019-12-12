@@ -21,7 +21,7 @@ bool TXL_Controller::init() {
     if (!((tCtrls >> i) & 1)) {
       if (SDL_IsGameController(i)) {
         ctrl = SDL_GameControllerOpen(i);
-        if (!ctrl) printf("Error opening controller %i. %s\n", i, SDL_GetError());
+        if (!ctrl) printf("error opening controller %i (%s)\n", i, SDL_GetError());
         else {
           id = i;
           tCtrls |= 1 << i;
@@ -31,10 +31,8 @@ bool TXL_Controller::init() {
     }
     i++;
   }
-  if (id == -1) {
-    return 0;
-  }
-  printf("Controller %i connected\n", id);
+  if (id == -1) return 0;
+  printf("controller %i connected\n", id);
   return 1;
 }
 
@@ -43,7 +41,7 @@ bool TXL_Controller::update() {
   b = 0;
   SDL_GameControllerUpdate();
   if (!SDL_GameControllerGetAttached(ctrl)) {
-    printf("Controller %i disconnected.\n", id);
+    printf("controller %i disconnected\n", id);
     return 0;
   }
   b |= CtrlN * SDL_GameControllerGetButton(ctrl, SDL_CONTROLLER_BUTTON_Y);

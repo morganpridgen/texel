@@ -30,11 +30,10 @@ bool TXL_InitSound() {
   want.callback = (SDL_AudioCallback)TXL_HandleAudio;
   TXL_SoundDev = SDL_OpenAudioDevice(NULL, 0, &want, &have, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
   if (TXL_SoundDev == 0) {
-    printf("Error setting up sound. (%s)\n", SDL_GetError());
+    printf("error setting up sound (%s)\n", SDL_GetError());
     return 0;
   }
   freq = have.freq;
-  if (TXL_SoundDev == 0) return 0;
   for (int i = 0; i < channelCount; i++) {
     squares[i] = nullptr;
     noises[i] = nullptr;
