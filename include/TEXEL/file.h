@@ -12,6 +12,7 @@ void TEXELFunc TXL_InitPaths(const char*);
 char* TEXELFunc TXL_DataPath(const char*);
 char* TEXELFunc TXL_SavePath(const char*);
 void TEXELFunc TXL_InitEndian();
+void TEXELFunc TXL_FlipEndian(void*, int);
 
 class TEXELFunc TXL_File {
   private:

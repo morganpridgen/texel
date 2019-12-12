@@ -21,7 +21,7 @@ char dataPath[256];
 
 char endian = 0;
 
-void flipEndian(void*, int);
+void TXL_FlipEndian(void*, int);
 
 void TXL_InitPaths(const char *saveName) {
   char tmpPath[256];
@@ -99,7 +99,7 @@ void TXL_InitEndian() {
   printf("system is %s endian\n", endian == 'B' ? "big" : "little");
 }
 
-void flipEndian(void *data, int size) {
+void TXL_FlipEndian(void *data, int size) {
   if (endian == 'L') {
     for (int i = 0; i < size / 2; i++) {
       ((char *)data)[i] ^= ((char *)data)[size - i - 1];
@@ -121,14 +121,14 @@ bool TXL_File::init(const char *path, const char mode) {
 
 int TXL_File::read(void *data, const int len) {
   int size = fread(data, len, 1, file);
-  flipEndian(data, len);
+  TXL_FlipEndian(data, len);
   return size;
 }
 
 int TXL_File::write(void *data, const int len) {
-  flipEndian(data, len);
+  TXL_FlipEndian(data, len);
   int size = fwrite(data, len, 1, file);
-  flipEndian(data, len);
+  TXL_FlipEndian(data, len);
   return size;
 }
 
@@ -199,7 +199,7 @@ bool TXL_Socket::init(const char *addr) {
     }
     hostname[i] = addr[i];
   }
-  flipEndian(&port, sizeof(port));
+  TXL_FlipEndian(&port, sizeof(port));
   s = socket(AF_INET, SOCK_STREAM, 0);
   if (s < 0) {
     printf("error getting socket\n");
