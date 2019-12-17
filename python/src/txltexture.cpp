@@ -43,10 +43,8 @@ int TextureInit(Texture *self, PyObject *args, PyObject *kwds) {
       return -1;
     }
   } else {
-    TXL_Texture *tmp = TXL_RenderText(path, 1.0f, 1.0f, 1.0f);
-    memcpy(&(self->tex), tmp, sizeof(self->tex));
+    TXL_RenderText(&self->tex, path, 1.0f, 1.0f, 1.0f);
     w = self->tex.width(), h = self->tex.height();
-    delete tmp;
   }
   self->tex.setClip(0, w, 0, h);
   return 0;

@@ -61,6 +61,7 @@ bool TXL_Display::init(const char name[]) {
 void TXL_Display::end() {
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(win);
+  gDisp = nullptr;
 }
 
 void TXL_Display::refresh() {
