@@ -48,12 +48,11 @@ bool TXL_Display::init(const char name[]) {
   SDL_RendererInfo rInfo;
   SDL_GetRendererInfo(renderer, &rInfo);
   char dName[64];
-  sprintf(dName, "%s (backend: %s, fps: 0.0)", winName, rInfo.name);
+  sprintf(dName, "%s (backend: %s)", winName, rInfo.name);
   SDL_SetWindowTitle(win, dName);
   
   gDisp = this;
   lastRender = 0;
-  fTime = 0;
   updateMs = 0;
   return 1;
 }
@@ -65,22 +64,28 @@ void TXL_Display::end() {
 }
 
 void TXL_Display::refresh() {
-  fTime += (float(SDL_GetTicks() - lastRender) - fTime) / 8.0f;
-  updateMs += SDL_GetTicks() - lastRender;
+  static int refreshes = 0;
+  static int lastDelay = 0;
+  int cycleTime = lastRender;
+  int timeChange = SDL_GetTicks() - lastRender;
+  lastRender = SDL_GetTicks();
+  updateMs += timeChange;
   if (updateMs > 1000) {
     updateMs %= 1000;
     SDL_RendererInfo rInfo;
     SDL_GetRendererInfo(renderer, &rInfo);
     char dName[64];
-    sprintf(dName, "%s (backend: %s, fps: %.1f)", winName, rInfo.name, 1000.0f / fTime);
+    sprintf(dName, "%s (backend: %s, fps: %i)", winName, rInfo.name, refreshes);
     SDL_SetWindowTitle(win, dName);
+    refreshes = 0;
   }
-  int delay = 15 - (SDL_GetTicks() - lastRender);
-  if (delay > 1) SDL_Delay(delay);
-  lastRender = SDL_GetTicks();
   SDL_RenderPresent(renderer);
   SDL_SetRenderDrawColor(renderer, info.r * 255, info.g * 255, info.b * 255, 255);
   SDL_RenderClear(renderer);
+  int delay = int(int((1000 / 60) - (SDL_GetTicks() - cycleTime) + lastDelay) / 2);
+  if (delay > 0 && delay < 1000) SDL_Delay(delay);
+  lastDelay = delay;
+  refreshes++;
 };
 
 void TXL_Display::setFill(float nR, float nG, float nB) {

@@ -44,6 +44,8 @@ void TXL_RenderTri(const TXL_Vert &p1, const TXL_Vert &p2, const TXL_Vert &p3, c
   b2 = midP->y - m2 * midP->x;
   for (float i = topP->y; i < midP->y; i += gDisp->pixToCoord(1.0f)) {
     float x1 = i / m1 - b1 / m1, x2 = i / m2 - b2 / m2;
+    if (topP->x == botP->x) x1 = topP->x;
+    if (topP->x == midP->x) x2 = midP->x;
     SDL_Rect r = {gDisp->coordToPix(fmin(x1, x2)), gDisp->coordToPix(i), gDisp->coordToPix(fabs(x2 - x1)), 1};
     SDL_RenderFillRect(gDisp->getRenderer(), &r);
   }
@@ -51,6 +53,8 @@ void TXL_RenderTri(const TXL_Vert &p1, const TXL_Vert &p2, const TXL_Vert &p3, c
   b2 = midP->y - m2 * midP->x;
   for (float i = midP->y; i < botP->y; i += gDisp->pixToCoord(1.0f)) {
     float x1 = i / m1 - b1 / m1, x2 = i / m2 - b2 / m2;
+    if (topP->x == botP->x) x1 = topP->x;
+    if (midP->x == botP->x) x2 = midP->x;
     SDL_Rect r = {gDisp->coordToPix(fmin(x1, x2)), gDisp->coordToPix(i), gDisp->coordToPix(fabs(x2 - x1)), 1};
     SDL_RenderFillRect(gDisp->getRenderer(), &r);
   }
