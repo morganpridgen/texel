@@ -24,13 +24,13 @@ class TEXELFunc TXL_Display { // display handler
     unsigned int lastRender;
     char winName[32];
     float fTime;
-    int updateMs;
+    int updateMs, refreshes, lastDelay;
   public:
     bool init(const char[]);
     void end();
     void refresh();
     void setFill(float, float, float);
-    void event(SDL_Event);
+    bool event(SDL_Event);
     SDL_Renderer *getRenderer() {return renderer;}
     int coordToPix(float coord) {return round(coord * info.sR);}
     float pixToCoord(int pix) {return float(pix) / info.sR;}
@@ -38,6 +38,8 @@ class TEXELFunc TXL_Display { // display handler
     float mouseYToCoord(int d) {return pixToCoord(d - (info.rY - TXL_IntResY * info.sR) / 2);}
 };
 
-extern TEXELFunc TXL_Display *gDisp;
+TXL_Display TEXELFunc *TXL_GetTargetDisplay();
+void TEXELFunc TXL_SetTargetDisplay(TXL_Display*);
+
 
 #endif

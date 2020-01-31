@@ -6,7 +6,7 @@
 
 int tCtrls = 0;
 
-bool TXL_Controller::init() {
+bool TXL_Gamepad::init() {
   id = -1;
   ctrl = nullptr;
   b = 0;
@@ -36,7 +36,7 @@ bool TXL_Controller::init() {
   return 1;
 }
 
-bool TXL_Controller::update() {
+bool TXL_Gamepad::update() {
   lB = b;
   b = 0;
   SDL_GameControllerUpdate();
@@ -70,12 +70,12 @@ bool TXL_Controller::update() {
   return 1;
 }
 
-void TXL_Controller::end() {
+void TXL_Gamepad::end() {
   tCtrls &= ~(1 << id);
   SDL_GameControllerClose(ctrl);
 }
 
-void TXL_Controller::rumble(float power, int time) {
+void TXL_Gamepad::rumble(float power, int time) {
   if (power < 0.0f) power = 0.0f;
   if (power > 1.0f) power = 1.0f;
   SDL_GameControllerRumble(ctrl, float(0xffff) * power, float(0xffff) * power, time);
@@ -89,7 +89,6 @@ bool TXL_Keyboard::init() {
   mY = 0.0f;
   b = 0;
   lB = 0;
-  ctrl = nullptr;
   SDL_ShowCursor(SDL_DISABLE);
   return 1;
 };
@@ -114,7 +113,7 @@ bool TXL_Keyboard::update() {
   aY = float(keys[SDL_SCANCODE_S] - keys[SDL_SCANCODE_W]);
   int tMX, tMY;
   b |= CtrlM * (SDL_GetMouseState(&tMX, &tMY) & SDL_BUTTON(SDL_BUTTON_LEFT) != 0);
-  mX = gDisp->mouseXToCoord(tMX), mY = gDisp->mouseYToCoord(tMY);
+  mX = TXL_GetTargetDisplay()->mouseXToCoord(tMX), mY = TXL_GetTargetDisplay()->mouseYToCoord(tMY);
   if (mX < 0.0f) mX = 0.0f;
   if (mX > 640.0f) mX = 640.0f;
   if (mY < 0.0f) mY = 0.0f;
@@ -129,7 +128,7 @@ void TXL_Keyboard::end() {
 void TXL_ManageController(TXL_Controller *&ctrl) {
   TXL_Controller *oldCtrl = nullptr;
   if (!ctrl) {
-    ctrl = new TXL_Controller;
+    ctrl = new TXL_Gamepad;
     if (!ctrl->init()) {
       delete ctrl;
       ctrl = nullptr;
@@ -140,7 +139,7 @@ void TXL_ManageController(TXL_Controller *&ctrl) {
     if (ctrl->isKeyboard()) {
       ctrl->update();
       oldCtrl = ctrl;
-      ctrl = new TXL_Controller;
+      ctrl = new TXL_Gamepad;
       if (ctrl->init()) {
         oldCtrl->end();
         delete oldCtrl;

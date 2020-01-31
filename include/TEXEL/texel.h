@@ -10,7 +10,7 @@
 #include <TEXEL/text.h>
 
 bool TEXELFunc TXL_Init();
-bool TEXELFunc TXL_Events(TXL_Display*);
+bool TEXELFunc TXL_Events(TXL_Display*, int);
 void TEXELFunc TXL_End();
 
 void TEXELFunc TXL_Log(char*);

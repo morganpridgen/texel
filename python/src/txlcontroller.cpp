@@ -13,7 +13,7 @@ PyObject *ControllerNew(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 }
 
 int ControllerInit(Controller *self, PyObject *args, PyObject *kwds) {
-  self->ctrl = new TXL_Controller;
+  self->ctrl = new TXL_Gamepad;
   if (!self->ctrl->init()) {
     delete self->ctrl;
     self->ctrl = new TXL_Keyboard;

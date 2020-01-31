@@ -28,7 +28,7 @@ bool TXL_Texture::load(SDL_Surface *surf, int w, int h) {
     iH = h;
   }
   
-  texture = SDL_CreateTextureFromSurface(gDisp->getRenderer(), surf);
+  texture = SDL_CreateTextureFromSurface(TXL_GetTargetDisplay()->getRenderer(), surf);
   if (!texture) {
     printf("error creating texture.\n");
     return 0;
@@ -56,11 +56,11 @@ void TXL_Texture::render(float x, float y, float sX, float sY, float r) {
   SDL_Rect sR, dR;
   sR = {round(fmin(cL, cR) * tW), round(fmin(cT, cB) * tH), round(fabs(cR - cL) * tW), round(fabs(cB - cT) * tH)};
   float w = iW * sX * fabs(cR - cL), h = iH * sY * fabs(cB - cT);
-  dR = {gDisp->coordToPix(x - (w / 2.0f)), gDisp->coordToPix(y - (h / 2.0f)), gDisp->coordToPix(w), gDisp->coordToPix(h)};
+  dR = {TXL_GetTargetDisplay()->coordToPix(x - (w / 2.0f)), TXL_GetTargetDisplay()->coordToPix(y - (h / 2.0f)), TXL_GetTargetDisplay()->coordToPix(w), TXL_GetTargetDisplay()->coordToPix(h)};
   int flip;
   if (cL > cR) flip = flip | SDL_FLIP_HORIZONTAL;
   if (cT > cB) flip = flip | SDL_FLIP_VERTICAL;
-  SDL_RenderCopyEx(gDisp->getRenderer(), texture, &sR, &dR, r, NULL, (SDL_RendererFlip)flip);
+  SDL_RenderCopyEx(TXL_GetTargetDisplay()->getRenderer(), texture, &sR, &dR, r, NULL, (SDL_RendererFlip)flip);
 }
 
 void TXL_Texture::render(float x, float y, float sX, float sY) {
@@ -71,8 +71,8 @@ void TXL_Texture::render(float x, float y, float sX, float sY) {
   SDL_Rect sR, dR;
   sR = {round(cL * tW), round(cT * tH), round((cR - cL) * tW), round((cB - cT) * tH)};
   float w = iW * sX * (cR - cL), h = iH * sY * (cB - cT);
-  dR = {gDisp->coordToPix(x - (w / 2.0f)), gDisp->coordToPix(y - (h / 2.0f)), gDisp->coordToPix(w), gDisp->coordToPix(h)};
-  SDL_RenderCopy(gDisp->getRenderer(), texture, &sR, &dR);
+  dR = {TXL_GetTargetDisplay()->coordToPix(x - (w / 2.0f)), TXL_GetTargetDisplay()->coordToPix(y - (h / 2.0f)), TXL_GetTargetDisplay()->coordToPix(w), TXL_GetTargetDisplay()->coordToPix(h)};
+  SDL_RenderCopy(TXL_GetTargetDisplay()->getRenderer(), texture, &sR, &dR);
 }
 
 void TXL_Texture::setClip(float nL, float nR, float nT, float nB) {

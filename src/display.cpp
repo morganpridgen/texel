@@ -7,10 +7,9 @@
 #include <SDL2/SDL_image.h>
 #define min(x, y) ((x) < (y) ? (x) : (y))
 
-TXL_Display *gDisp = nullptr;
+TXL_Display *tDisplay = nullptr;
 
 bool TXL_Display::init(const char name[]) {
-  if (gDisp != nullptr) return 0;
   info.rX = TXL_IntResX;
   info.rY = TXL_IntResY;
   info.r = 0.0f;
@@ -51,21 +50,21 @@ bool TXL_Display::init(const char name[]) {
   sprintf(dName, "%s (backend: %s)", winName, rInfo.name);
   SDL_SetWindowTitle(win, dName);
   
-  gDisp = this;
+  if (!tDisplay) tDisplay = this;
   lastRender = 0;
   updateMs = 0;
+  refreshes = 0;
+  lastDelay = 0;
   return 1;
 }
 
 void TXL_Display::end() {
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(win);
-  gDisp = nullptr;
+  if (tDisplay == this) tDisplay = nullptr;
 }
 
 void TXL_Display::refresh() {
-  static int refreshes = 0;
-  static int lastDelay = 0;
   int cycleTime = lastRender;
   int timeChange = SDL_GetTicks() - lastRender;
   lastRender = SDL_GetTicks();
@@ -95,28 +94,31 @@ void TXL_Display::setFill(float nR, float nG, float nB) {
   SDL_SetRenderDrawColor(renderer, info.r * 255, info.g * 255, info.b * 255, 255);
 }
 
-void TXL_Display::event(SDL_Event e) {
+bool TXL_Display::event(SDL_Event e) {
   SDL_Rect r;
-  if (e.type == SDL_WINDOWEVENT && (e.window.event == SDL_WINDOWEVENT_RESIZED)) {
-    if (e.window.data1 < TXL_IntResX || e.window.data2 < TXL_IntResY) {
-      SDL_SetWindowSize(win, TXL_IntResX, TXL_IntResY);
-      info.sR = 1.0f;
-      info.rX = TXL_IntResX;
-      info.rY = TXL_IntResY;
-      r = {0, 0, int(TXL_IntResX), int(TXL_IntResY)};
-      SDL_RenderSetViewport(renderer, &r);
-      SDL_RenderSetLogicalSize(renderer, TXL_IntResX, TXL_IntResY);
-      return;
+  if (e.type == SDL_WINDOWEVENT && e.window.windowID == SDL_GetWindowID(win)) {
+    if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
+      if (e.window.data1 < TXL_IntResX || e.window.data2 < TXL_IntResY) {
+        SDL_SetWindowSize(win, TXL_IntResX, TXL_IntResY);
+        info.sR = 1.0f;
+        info.rX = TXL_IntResX;
+        info.rY = TXL_IntResY;
+        r = {0, 0, int(TXL_IntResX), int(TXL_IntResY)};
+        SDL_RenderSetViewport(renderer, &r);
+        SDL_RenderSetLogicalSize(renderer, TXL_IntResX, TXL_IntResY);
+      } else {
+        SDL_SetWindowSize(win, e.window.data1, e.window.data2);
+        info.rX = e.window.data1;
+        info.rY = e.window.data2;
+        info.sR = min(floor(info.rX / TXL_IntResX), floor(info.rY / TXL_IntResY));
+        r = {(info.rX - TXL_IntResX * info.sR) / 2, (info.rY - TXL_IntResY * info.sR) / 2, TXL_IntResX * info.sR, TXL_IntResY * info.sR};
+        SDL_RenderSetViewport(renderer, &r);
+        SDL_RenderSetLogicalSize(renderer, TXL_IntResX * info.sR, TXL_IntResY * info.sR);
+      }
     }
-    SDL_SetWindowSize(win, e.window.data1, e.window.data2);
-    info.rX = e.window.data1;
-    info.rY = e.window.data2;
-    info.sR = min(floor(info.rX / TXL_IntResX), floor(info.rY / TXL_IntResY));
-    r = {(info.rX - TXL_IntResX * info.sR) / 2, (info.rY - TXL_IntResY * info.sR) / 2, TXL_IntResX * info.sR, TXL_IntResY * info.sR};
-    SDL_RenderSetViewport(renderer, &r);
-    SDL_RenderSetLogicalSize(renderer, TXL_IntResX * info.sR, TXL_IntResY * info.sR);
+    if (e.window.event == SDL_WINDOWEVENT_CLOSE) return 0;
   }
-  if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_F11) {
+  if (e.type == SDL_KEYDOWN && e.key.windowID == SDL_GetWindowID(win) && e.key.keysym.sym == SDLK_F11) {
     info.fullscreen = ~info.fullscreen;
     if (info.fullscreen) {
       SDL_DisplayMode d;
@@ -136,4 +138,13 @@ void TXL_Display::event(SDL_Event e) {
     SDL_RenderSetViewport(renderer, &r);
     SDL_RenderSetLogicalSize(renderer, TXL_IntResX * info.sR, TXL_IntResY * info.sR);
   }
+  return 1;
+}
+
+TXL_Display *TXL_GetTargetDisplay() {
+  return tDisplay;
+}
+
+void TXL_SetTargetDisplay(TXL_Display *newTDisplay) {
+  tDisplay = newTDisplay;
 }

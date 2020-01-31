@@ -33,7 +33,7 @@ bool init() {
   
   if (!disp.init("TEXEL Test")) return 0;
   if (!arrow.load("arrow.png")) return 0;
-  ctrl = new TXL_Controller;
+  ctrl = new TXL_Gamepad;
   if (!ctrl->init()) {
     delete ctrl;
     ctrl = new TXL_Keyboard;

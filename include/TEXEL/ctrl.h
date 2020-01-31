@@ -30,13 +30,12 @@ class TEXELFunc TXL_Controller {
     float mY;
     int b;
     int lB;
-    SDL_GameController *ctrl;
     int id;
   public:
-    virtual bool init();
-    virtual bool update();
-    virtual void end();
-    virtual bool isKeyboard() {return 0;}
+    virtual bool init() = 0;
+    virtual bool update() = 0;
+    virtual void end() = 0;
+    virtual bool isKeyboard() = 0;
     
     bool buttonPress(TXL_CtrlButton button) {return b & button;}
     bool buttonClick(TXL_CtrlButton button) {return (b & button) && (~lB & button);}
@@ -46,15 +45,29 @@ class TEXELFunc TXL_Controller {
     float mouseX() {return mX;}
     float mouseY() {return mY;}
     int getId() {return id;}
-    void rumble(float, int);
+    virtual void rumble(float, int) = 0;
+};
+
+class TEXELFunc TXL_Gamepad : public TXL_Controller {
+  protected:
+    SDL_GameController *ctrl;
+  public:
+    virtual bool init();
+    virtual bool update();
+    virtual void end();
+    virtual bool isKeyboard() {return 0;}
+    
+    virtual void rumble(float, int);
 };
 
 class TEXELFunc TXL_Keyboard : public TXL_Controller {
   public:
-    bool init();
-    bool update();
-    void end();
-    bool isKeyboard() {return 1;}
+    virtual bool init();
+    virtual bool update();
+    virtual void end();
+    virtual bool isKeyboard() {return 1;}
+    
+    virtual void rumble(float power, int time) {}
 };
 
 void TEXELFunc TXL_ManageController(TXL_Controller*&);

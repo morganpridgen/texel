@@ -24,11 +24,13 @@ bool TXL_Init() {
   return 1;
 }
 
-bool TXL_Events(TXL_Display *disp) {
+bool TXL_Events(TXL_Display *disps, int n) {
   SDL_Event e;
   while (SDL_PollEvent(&e) != 0) {
     if (e.type == SDL_QUIT) return 0;
-    disp->event(e);
+    for (int i = 0; i < n; i++) {
+      if (!disps[i].event(e)) return 0;
+    }
   }
   return 1;
 }
